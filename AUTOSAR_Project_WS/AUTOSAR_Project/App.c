@@ -24,11 +24,6 @@ void Init_Task(void)
     /* Initialize Dio Driver */
     Dio_Init(&Dio_Configuration);
 
-    /* Initialize LED Driver */
-    Led_Init();
-
-    /* Initialize Button Driver */
-    Button_Init();
 }
 
 /* Description: Task executes every 20 Mili-seconds to check the button state */
