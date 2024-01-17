@@ -114,6 +114,15 @@ typedef enum {
 #define PORT_COMMIT_REG_OFFSET            0x524
 #define PORT_ANALOG_MODE_SEL_REG_OFFSET   0x528
 #define PORT_CTL_REG_OFFSET               0x52C
+/* PCMx Register*/
+#define PMCx_REGISTER_1            		  0x00000001
+#define PMCx_REGISTER_2            		  0x00000002
+#define PMCx_REGISTER_3            		  0x00000003
+#define PMCx_REGISTER_4             	  0x00000004
+#define PMCx_REGISTER_7             	  0x00000007
+#define PMCx_REGISTER_8             	  0x00000008
+
+#define SHFITING_VALUE_FOUR               4
 /*******************************************************************************
  *                              MODULE DATA TYPES                              *
  *******************************************************************************/

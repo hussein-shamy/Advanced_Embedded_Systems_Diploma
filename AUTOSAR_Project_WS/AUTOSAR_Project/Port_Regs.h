@@ -6,7 +6,7 @@
  *
  * Description: Header file for TM4C123GH6PM Microcontroller - Port Driver Registers
  *
- * Author: Huseein El-Shamy
+ * Author: Hussein El-Shamy
  ******************************************************************************/
 #ifndef PORT_REGS_H_
 #define PORT_REGS_H_

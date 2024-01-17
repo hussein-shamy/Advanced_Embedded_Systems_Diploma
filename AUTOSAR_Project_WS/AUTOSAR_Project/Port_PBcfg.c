@@ -41,16 +41,6 @@
 
 /************************************************************************************
  *                   CONFIGURATION STRUCTURE
- *-----------------------------------------------------------------------------------
- *
- *
- *
- *
- *
- *
- *
- *
- *
  ************************************************************************************/
 
 const Port_ConfigType Port_Configuration = {
@@ -425,14 +415,14 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 1 *****************************
          ******************** Configured as LED **********************/
-        PORT_F,
-        PIN1_PIN_NUM,
-        PORT_PIN_DEFAULT_MODE,
-        OUTPUT,
-        PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
-        PORT_PIN_DEFAULT_INTERNAL_RESISTOR,
-        PORT_PIN_DEFAULT_INITIAL_VALUE,
-        PORT_PIN_DEFAULT_MODE_CHANGEABLE,
+        PORT_PIN_LED_PORT_ID,
+        PORT_PIN_LED_ID,
+        PORT_PIN_LED_MODE,
+        PORT_PIN_LED_DIRECTION,
+        PORT_PIN_LED_DIRECTION_CHANGEABLE,
+        PORT_PIN_LED_INTERNAL_RESISTOR,
+        PORT_PIN_LED_LEVEL_VALUE,
+        PORT_PIN_LED_CHANGEABLE,
         /************************** PIN 2 *****************************/
         PORT_F,
         PIN2_PIN_NUM,
@@ -453,12 +443,12 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 4 *****************************
          ******************* Configured as BUTTON ********************/
-        PORT_F,
-        PIN4_PIN_NUM,
-        PORT_PIN_DEFAULT_MODE,
-        INPUT,
-        PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
-        PORT_PIN_DEFAULT_INTERNAL_RESISTOR,
-        PORT_PIN_DEFAULT_INITIAL_VALUE,
-        PORT_PIN_DEFAULT_MODE_CHANGEABLE,
+        PORT_PIN_BUTTON_PORT_ID,
+        PORT_PIN_BUTTON_ID,
+        PORT_PIN_BUTTON_MODE,
+        PORT_PIN_BUTTON_DIRECTION,
+        PORT_PIN_BUTTON_DIRECTION_CHANGEABLE,
+        PORT_PIN_BUTTON_INTERNAL_RESISTOR,
+        PORT_PIN_BUTTON_LEVEL_VALUE,
+        PORT_PIN_BUTTON_CHANGEABLE,
 };

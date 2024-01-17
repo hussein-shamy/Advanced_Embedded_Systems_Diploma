@@ -9,7 +9,6 @@
  * Author: Hussein El-Shamy
  ******************************************************************************/
 
-
 #ifndef PORT_CFG_H_
 #define PORT_CFG_H_
 
@@ -19,21 +18,19 @@
 #define PORT_CFG_SW_MAJOR_VERSION              (1U)
 #define PORT_CFG_SW_MINOR_VERSION              (0U)
 #define PORT_CFG_SW_PATCH_VERSION              (0U)
-
 /************************************************************************************
  *                             AUTOSAR Version 4.0.3
  ************************************************************************************/
 #define PORT_CFG_AR_RELEASE_MAJOR_VERSION     (4U)
 #define PORT_CFG_AR_RELEASE_MINOR_VERSION     (0U)
 #define PORT_CFG_AR_RELEASE_PATCH_VERSION     (3U)
-
 /************************************************************************************
  *                        CONFIGURATION PARAMETERS RANGES
  ************************************************************************************/
 
 /* Used as a parameter value for APIs existence*/
-#define Enable                  (0x01U)         /*The function is enabled (exist)*/
-#define Disable                 (0x00U)         /*The function is disabled (not exist)*/
+#define ENABLE                  (0x01U)         /*The function is enabled (exist)*/
+#define DISABLE                 (0x00U)         /*The function is disabled (not exist)*/
 
 /* Used as a parameter value for Port Pin Value */
 #define PORT_PIN_LEVEL_HIGH     (0x01U)         /*Port Pin level is High*/
@@ -169,10 +166,10 @@
     | Description Module   | Wide configuration parameters of the PORT driver.   |
      ***********************************************************************************/
 
-    #define PORT_DEV_ERROR_DETECT                 		(Enable)   				 /*Valid Range: enable or disable*/
-    #define PORT_SET_PIN_DIRECTION_API             		(Enable)   				 /*Valid Range: enable or disable*/
-    #define PORT_SET_PIN_MODE_API                  		(Enable)   				 /*Valid Range: enable or disable*/
-    #define PORT_VERSION_INFO_API                 		(Enable)   				 /*Valid Range: enable or disable*/
+    #define PORT_DEV_ERROR_DETECT                 		(ENABLE)   				 /*Valid Range: enable or disable*/
+    #define PORT_SET_PIN_DIRECTION_API             		(ENABLE)   				 /*Valid Range: enable or disable*/
+    #define PORT_SET_PIN_MODE_API                  		(ENABLE)   				 /*Valid Range: enable or disable*/
+    #define PORT_VERSION_INFO_API                 		(ENABLE)   				 /*Valid Range: enable or disable*/
 
     /************************************************************************************
     | Container Name       | PortConfigSet                                       |
@@ -193,32 +190,32 @@
             | Description Module   | Configuration of the individual port pins.                 |
             ************************************************************************************/
 
-            #define PORT_PIN_LED_DIRECTION              (PORT_PIN_OUT)          /*Valid Range: input or output*/
-            #define PORT_PIN_LED_DIRECTION_CHANGEABLE   (Disable)              /*Valid Range: enable or disable*/
-            #define PORT_PIN_LED_ID                     (PORTF_PF1)            /*Valid Range: 0 to 65535*/
+            #define PORT_PIN_LED_DIRECTION              (OUTPUT)               /*Valid Range: input or output*/
+            #define PORT_PIN_LED_DIRECTION_CHANGEABLE   (DISABLE)              /*Valid Range: enable or disable*/
+            #define PORT_PIN_LED_ID                     (PIN1_PIN_NUM)         /*Valid Range: 0 to 65535*/
             #define PORT_PIN_LED_INTIAL_MODE            (PORT_PIN_MODE_DIO)    /*Valid Range: one of supported modes above */
-            #define PORT_PIN_LED_LEVEL_VALUE            (PORT_PIN_LEVEL_HIGH)   /*Valid Range: High or Low*/
+            #define PORT_PIN_LED_LEVEL_VALUE            (PORT_PIN_LEVEL_LOW)   /*Valid Range: High or Low*/
             #define PORT_PIN_LED_MODE                   (PORT_PIN_MODE_DIO)    /*Valid Range: one of supported modes above */
-            #define PORT_PIN_LED_CHANGEABLE             (Disable)              /*Valid Range: enable or disable*/
+            #define PORT_PIN_LED_CHANGEABLE             (DISABLE)              /*Valid Range: enable or disable*/
             /* Non AUTOSAR Configuration*/
-            #define PORT_PIN_LED_PORT_ID               (PORT_F)
-            #define PORT_PIN_LED_INTERNAL_RESISTOR     (OFF)
+            #define PORT_PIN_LED_PORT_ID                (PORT_F)
+            #define PORT_PIN_LED_INTERNAL_RESISTOR      (OFF)
 
             /************************************************************************************
             | Container Name       | PortPin_BUTTON                                             |
             | Description Module   | Configuration of the individual port pins.                 |
             ************************************************************************************/
 
-            #define PORT_PIN_BUTTON_DIRECTION             (PORT_PIN_IN)          /*Valid Range: input or output*/
-            #define PORT_PIN_BUTTON_DIRECTION_CHANGEABLE  (Disable)              /*Valid Range: enable or disable*/
-            #define PORT_PIN_BUTTON_ID                    (PORTF_PF4)            /*Valid Range: 0 to 65535*/
-            #define PORT_PIN_BUTTON_INTIAL_MODE            (PORT_PIN_MODE_DIO)    /*Valid Range: one of supported modes above */
-            #define PORT_PIN_BUTTON_LEVEL_VALUE            (PORT_PIN_LEVEL_LOW)   /*Valid Range: High or Low*/
-            #define PORT_PIN_BUTTON_MODE                  (PORT_PIN_MODE_DIO)    /*Valid Range: one of supported modes above */
-            #define PORT_PIN_BUTTON_CHANGEABLE            (Disable)              /*Valid Range: enable or disable*/
+            #define PORT_PIN_BUTTON_DIRECTION             (INPUT)               /*Valid Range: input or output*/
+            #define PORT_PIN_BUTTON_DIRECTION_CHANGEABLE  (DISABLE)             /*Valid Range: enable or disable*/
+            #define PORT_PIN_BUTTON_ID                    (PIN4_PIN_NUM)        /*Valid Range: 0 to 65535*/
+            #define PORT_PIN_BUTTON_INTIAL_MODE           (PORT_PIN_MODE_DIO)   /*Valid Range: one of supported modes above */
+            #define PORT_PIN_BUTTON_LEVEL_VALUE           (PORT_PIN_LEVEL_LOW)  /*Valid Range: High or Low*/
+            #define PORT_PIN_BUTTON_MODE                  (PORT_PIN_MODE_DIO)   /*Valid Range: one of supported modes above */
+            #define PORT_PIN_BUTTON_CHANGEABLE            (DISABLE)             /*Valid Range: enable or disable*/
             /* Non AUTOSAR Configuration*/
             #define PORT_PIN_BUTTON_PORT_ID               (PORT_F)
-            #define PORT_PIN_BUTTON_INTERNAL_RESISTOR     (OFF)
+            #define PORT_PIN_BUTTON_INTERNAL_RESISTOR     (PULL_UP)
 
 /************************************************************************************************/
 
