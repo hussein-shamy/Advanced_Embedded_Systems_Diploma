@@ -7,6 +7,11 @@
  * Description: Source file for Application Tasks.
  *
  * Author: Mohamed Tarek
+ *
+ * Co-Author: Hussein El-Shamy
+ *     - Deleting the initialization function of LED module and BUTTON module
+ *       because the AUTOSAR PORT Driver will be responsible for this functionality
+ *       So, I added PORT module initialization function to do this functionality
  ******************************************************************************/
 
 #include "App.h"
@@ -14,6 +19,7 @@
 #include "Led.h"
 #include "Dio.h"
 #include "Mcu.h"
+#include "Port.h"
 
 /* Description: Task executes once to initialize all the Modules */
 void Init_Task(void)
@@ -21,9 +27,11 @@ void Init_Task(void)
     /* Initialize Mcu Driver */
     Mcu_Init();
 
+    /* Initialize PORT Driver */
+    Port_Init(&Port_Configuration);
+
     /* Initialize Dio Driver */
     Dio_Init(&Dio_Configuration);
-
 }
 
 /* Description: Task executes every 20 Mili-seconds to check the button state */

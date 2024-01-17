@@ -13,6 +13,8 @@ App.obj: ../Dio.h
 App.obj: ../Dio_Cfg.h
 App.obj: ../Common_Macros.h
 App.obj: ../Mcu.h
+App.obj: ../Port.h
+App.obj: ../Port_Cfg.h
 
 ../App.c:
 
@@ -39,4 +41,8 @@ App.obj: ../Mcu.h
 ../Common_Macros.h:
 
 ../Mcu.h:
+
+../Port.h:
+
+../Port_Cfg.h:
 

@@ -7,7 +7,12 @@
  * Description: Source file for Button Module.
  *
  * Author: Mohamed Tarek
+ *
+ * Co-Author: Hussein El-Shamy
+ *     - Deleting the fill configuration function and initialization function
+ *       because the AUTOSAR PORT Driver will be responsible for this functionality
  ******************************************************************************/
+
 #include "Dio.h"
 #include "Button.h"
 

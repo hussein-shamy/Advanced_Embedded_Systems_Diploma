@@ -58,8 +58,6 @@
 #define PORT_PIN_MODE_UART      (14U)           /**Port Pin used by UART*/
 #define PORT_PIN_MODE_USB       (15U)           /**Port Pin used by USB*/
 
-//#define PORT_CONFIGURED_CHANNLES (43U)
-
  /*******************************************************************************
  *                                PORTA                                         *
  *******************************************************************************/
@@ -131,6 +129,17 @@
 #define JTAG_PIN4                       PORTC_PC3
 #define NMI_PIN1                        PORTF_PF0
 #define NMI_PIN2                        PORTD_PD7
+ /*******************************************************************************
+ *                              PINS IDs                                        *
+ *******************************************************************************/
+#define PIN0_PIN_NUM                   (uint8)0
+#define PIN1_PIN_NUM                   (uint8)1
+#define PIN2_PIN_NUM                   (uint8)2
+#define PIN3_PIN_NUM                   (uint8)3
+#define PIN4_PIN_NUM                   (uint8)4
+#define PIN5_PIN_NUM                   (uint8)5
+#define PIN6_PIN_NUM                   (uint8)6
+#define PIN7_PIN_NUM                   (uint8)7
 /************************************************************************************
  *                                  DEFAULT VALUES
  *                   TO ASSIGN THESES VALUES TO UNCONFIGURED PINS
@@ -184,13 +193,13 @@
             | Description Module   | Configuration of the individual port pins.                 |
             ************************************************************************************/
 
-            #define PORT_PIN_LED_DIRECTION             (PORT_PIN_OUT)          /*Valid Range: input or output*/
+            #define PORT_PIN_LED_DIRECTION              (PORT_PIN_OUT)          /*Valid Range: input or output*/
             #define PORT_PIN_LED_DIRECTION_CHANGEABLE   (Disable)              /*Valid Range: enable or disable*/
-            #define PORT_PIN_LED_ID                    (PORTF_PF1)            /*Valid Range: 0 to 65535*/
+            #define PORT_PIN_LED_ID                     (PORTF_PF1)            /*Valid Range: 0 to 65535*/
             #define PORT_PIN_LED_INTIAL_MODE            (PORT_PIN_MODE_DIO)    /*Valid Range: one of supported modes above */
             #define PORT_PIN_LED_LEVEL_VALUE            (PORT_PIN_LEVEL_HIGH)   /*Valid Range: High or Low*/
-            #define PORT_PIN_LED_MODE                  (PORT_PIN_MODE_DIO)    /*Valid Range: one of supported modes above */
-            #define PORT_PIN_LED_CHANGEABLE            (Disable)              /*Valid Range: enable or disable*/
+            #define PORT_PIN_LED_MODE                   (PORT_PIN_MODE_DIO)    /*Valid Range: one of supported modes above */
+            #define PORT_PIN_LED_CHANGEABLE             (Disable)              /*Valid Range: enable or disable*/
             /* Non AUTOSAR Configuration*/
             #define PORT_PIN_LED_PORT_ID               (PORT_F)
             #define PORT_PIN_LED_INTERNAL_RESISTOR     (OFF)

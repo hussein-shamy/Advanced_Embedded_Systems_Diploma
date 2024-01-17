@@ -59,7 +59,7 @@ const Port_ConfigType Port_Configuration = {
          **************************************************************/
         /************************** PIN 0 *****************************/
         PORT_A,
-        PORTA_PA0,
+        PIN0_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -68,7 +68,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 1 *****************************/
         PORT_A,
-        PORTA_PA1,
+        PIN1_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -77,7 +77,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 2 *****************************/
         PORT_A,
-        PORTA_PA2,
+        PIN2_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -86,7 +86,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 3 *****************************/
         PORT_A,
-        PORTA_PA3,
+        PIN3_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -95,7 +95,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 4 *****************************/
         PORT_A,
-        PORTA_PA4,
+        PIN4_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -104,7 +104,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 5 *****************************/
         PORT_A,
-        PORTA_PA5,
+        PIN5_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -113,7 +113,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 6 *****************************/
         PORT_A,
-        PORTA_PA6,
+        PIN6_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -122,7 +122,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 7 *****************************/
         PORT_A,
-        PORTA_PA7,
+        PIN6_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -134,7 +134,7 @@ const Port_ConfigType Port_Configuration = {
          **************************************************************/
         /************************** PIN 0 *****************************/
         PORT_B,
-        PORTB_PB0,
+        PIN0_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -143,7 +143,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 1 *****************************/
         PORT_B,
-        PORTB_PB1,
+        PIN1_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -152,7 +152,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 2 *****************************/
         PORT_B,
-        PORTB_PB2,
+        PIN2_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -161,7 +161,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 3 *****************************/
         PORT_B,
-        PORTB_PB3,
+        PIN3_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -170,7 +170,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 4 *****************************/
         PORT_B,
-        PORTB_PB4,
+        PIN4_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -179,7 +179,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 5 *****************************/
         PORT_B,
-        PORTB_PB5,
+        PIN5_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -188,7 +188,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 6 *****************************/
         PORT_B,
-        PORTB_PB6,
+        PIN6_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -197,7 +197,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 7 *****************************/
         PORT_B,
-        PORTB_PB7,
+        PIN6_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -209,7 +209,7 @@ const Port_ConfigType Port_Configuration = {
          **************************************************************/
         /************************** PIN 0 *****************************/
         PORT_C,
-        PORTC_PC0,
+        PIN0_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -218,7 +218,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 1 *****************************/
         PORT_C,
-        PORTC_PC1,
+        PIN1_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -227,7 +227,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 2 *****************************/
         PORT_C,
-        PORTC_PC2,
+        PIN2_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -236,7 +236,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 3 *****************************/
         PORT_C,
-        PORTC_PC3,
+        PIN3_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -245,7 +245,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 4 *****************************/
         PORT_C,
-        PORTC_PC4,
+        PIN4_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -254,7 +254,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 5 *****************************/
         PORT_C,
-        PORTC_PC5,
+        PIN5_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -263,7 +263,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 6 *****************************/
         PORT_C,
-        PORTC_PC6,
+        PIN6_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -272,7 +272,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 7 *****************************/
         PORT_C,
-        PORTC_PC7,
+        PIN6_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -284,7 +284,7 @@ const Port_ConfigType Port_Configuration = {
          **************************************************************/
         /************************** PIN 0 *****************************/
         PORT_D,
-        PORTD_PD0,
+        PIN0_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -293,7 +293,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 1 *****************************/
         PORT_D,
-        PORTD_PD1,
+        PIN1_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -302,7 +302,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 2 *****************************/
         PORT_D,
-        PORTD_PD2,
+        PIN2_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -311,7 +311,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 3 *****************************/
         PORT_D,
-        PORTD_PD3,
+        PIN3_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -320,7 +320,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 4 *****************************/
         PORT_D,
-        PORTD_PD4,
+        PIN4_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -329,7 +329,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 5 *****************************/
         PORT_D,
-        PORTD_PD5,
+        PIN5_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -338,7 +338,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 6 *****************************/
         PORT_D,
-        PORTD_PD6,
+        PIN6_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -347,7 +347,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 7 *****************************/
         PORT_D,
-        PORTD_PD7,
+        PIN6_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -359,7 +359,7 @@ const Port_ConfigType Port_Configuration = {
          **************************************************************/
         /************************** PIN 0 *****************************/
         PORT_E,
-        PORTE_PE0,
+        PIN0_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -368,7 +368,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 1 *****************************/
         PORT_E,
-        PORTE_PE1,
+        PIN1_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -377,7 +377,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 2 *****************************/
         PORT_E,
-        PORTE_PE2,
+        PIN2_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -386,7 +386,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 3 *****************************/
         PORT_E,
-        PORTE_PE3,
+        PIN3_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -395,7 +395,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 4 *****************************/
         PORT_E,
-        PORTE_PE4,
+        PIN4_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -404,7 +404,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 5 *****************************/
         PORT_E,
-        PORTE_PE5,
+        PIN5_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -416,7 +416,7 @@ const Port_ConfigType Port_Configuration = {
          **************************************************************/
         /************************** PIN 0 *****************************/
         PORT_F,
-        PORTF_PF0,
+        PIN0_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -426,7 +426,7 @@ const Port_ConfigType Port_Configuration = {
         /************************** PIN 1 *****************************
          ******************** Configured as LED **********************/
         PORT_F,
-        PORTF_PF1,
+        PIN1_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         OUTPUT,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -435,7 +435,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 2 *****************************/
         PORT_F,
-        PORTF_PF2,
+        PIN2_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -444,7 +444,7 @@ const Port_ConfigType Port_Configuration = {
         PORT_PIN_DEFAULT_MODE_CHANGEABLE,
         /************************** PIN 3 *****************************/
         PORT_F,
-        PORTF_PF3,
+        PIN3_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         PORT_PIN_DEFAULT_DIRECTION,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
@@ -454,7 +454,7 @@ const Port_ConfigType Port_Configuration = {
         /************************** PIN 4 *****************************
          ******************* Configured as BUTTON ********************/
         PORT_F,
-        PORTF_PF4,
+        PIN4_PIN_NUM,
         PORT_PIN_DEFAULT_MODE,
         INPUT,
         PORT_PIN_DEFAULT_DIRECTION_CHANGEABLE,
