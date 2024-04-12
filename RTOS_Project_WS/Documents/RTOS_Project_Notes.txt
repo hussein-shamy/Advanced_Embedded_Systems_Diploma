@@ -1,16 +1,15 @@
 MCAL Drivers
-- GPIO - GPIO/INT
-- GPTM
-- UART
-- ADC
-- INT
+- GPIO [DONE]
+- GPTM [DONE]
+- UART [DONE]
+- ADC  [NOT FINISHED YET]
 
 HAL Drivers
-- Buttons
-- Variable Resistor (Temperature Sensor)
-- LEDs (Heaters)
-- Console (LCD)
-- NVM
+- Buttons 									[DONE]
+- Variable Resistor (Temperature Sensor)	[NOT FINISHED YET]
+- LEDs (Heaters) 							[DONE]
+- Console (LCD)								[DONE]
+- NVM		     							[NOT FINISHED YET]
 
 RTOS Tasks (High to Low Priority)
 - Set_Temp_Button			ISR

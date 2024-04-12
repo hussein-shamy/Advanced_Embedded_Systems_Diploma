@@ -452,4 +452,11 @@ Timer Registers (WTIMER0)
 #define WTIMER0_TAR_REG           (*((volatile uint32 *)0x40036048))
 #define WTIMER0_TBR_REG           (*((volatile uint32 *)0x4003604C))
 
+/*****************************************************************************
+ADC Registers (ADC)
+*****************************************************************************/
+#define ADC0_RCGCADC_REG           (*((volatile uint32 *)0x400FE638))
+
+
+
 #endif
