@@ -6,12 +6,20 @@
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
-		<item key="selection" value="Port_PortChannels[pinIndex]"/>
+		<item key="selection" value="pinIndex"/>
 		<list key="findhistory">
+			<item value="pinIndex"/>
+			<item value="PORT._P.0"/>
+			<item value="PORT[^A]_P[^A]0"/>
+			<item value="PORT[^A]_P[^A]"/>
+			<item value="PORT[^A]_Px[^A]"/>
+			<item value="PORTx_Px0"/>
 			<item value="ConfigPtr-&gt;Channel[pinIndex]"/>
 			<item value="ConfigPtr-&gt;"/>
 		</list>
 		<list key="replacehistory">
+			<item value="Pin"/>
+			<item value="PIN0_PIN_NUM"/>
 			<item value="Port_PortChannels[pinIndex]"/>
 			<item value="ConfigPtr-&gt;Channel[pinIndex]."/>
 		</list>

@@ -1,0 +1,24 @@
+MCAL Drivers
+- GPIO - GPIO/INT
+- GPTM
+- UART
+- ADC
+- INT
+
+HAL Drivers
+- Buttons
+- Variable Resistor (Temperature Sensor)
+- LEDs (Heaters)
+- Console (LCD)
+- NVM
+
+RTOS Tasks (High to Low Priority)
+- Set_Temp_Button			ISR
+- Read_Temp_LM35			5
+- Select_Intensity_Level	4
+- Control_Temp_Heater		3
+- Display_Data_LCD			2
+- Store_Diagnosics_NVM		1
+- Run_Time_Measurement		-		
+
+

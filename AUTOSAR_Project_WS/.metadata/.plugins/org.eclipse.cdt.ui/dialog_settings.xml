@@ -13,4 +13,35 @@
 		<item key="size.width" value="916"/>
 		<item key="size.height" value="180"/>
 	</section>
+	<section name="org.eclipse.cdt.internal.ui.browser.opentype.OpenTypeActionSettings">
+		<item key="show_namespaces" value="true"/>
+		<item key="show_classes" value="true"/>
+		<item key="show_structs" value="true"/>
+		<item key="show_typedefs" value="true"/>
+		<item key="show_enums" value="true"/>
+		<item key="show_unions" value="true"/>
+		<item key="show_functions" value="true"/>
+		<item key="show_variables" value="true"/>
+		<item key="show_enumerators" value="true"/>
+		<item key="show_macros" value="true"/>
+		<item key="show_lowlevel" value="true"/>
+		<item key="x" value="636"/>
+		<item key="y" value="0"/>
+		<item key="width" value="649"/>
+		<item key="height" value="881"/>
+	</section>
+	<section name="PDOMSearchPage">
+		<item key="caseSensitive" value="false"/>
+		<item key="searchFlags" value="227191"/>
+		<list key="previousPatterns">
+			<item value="PORT?_P?7"/>
+			<item value="PORT?_P?6"/>
+			<item value="PORT?_P?5"/>
+			<item value="PORT?_P?4"/>
+			<item value="PORT?_P?3"/>
+			<item value="PORT?_P?2"/>
+			<item value="PORT?_P?1"/>
+			<item value="PORT?_P?0"/>
+		</list>
+	</section>
 </section>
