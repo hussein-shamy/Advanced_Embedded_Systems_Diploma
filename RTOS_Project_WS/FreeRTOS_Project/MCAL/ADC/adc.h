@@ -18,8 +18,16 @@
 /*******************************************************************************
  *                                Definitions                                  *
  *******************************************************************************/
-#define ADC_MAXIMUM_VALUE    1023
-#define ADC_REF_VOLT_VALUE   5
+
+#define ASEN3               3
+#define ALWAYS_SAMPLE       0xF000
+#define PE0_AIN_3 			3
+#define PE1_AIN_2 			2
+#define END0      			1
+#define SS3      			3
+#define INR3                3
+#define IN3                 3
+#define IE0                 2
 
 /*******************************************************************************
  *                      Functions Prototypes                                   *
@@ -27,15 +35,22 @@
 
 /*
  * Description :
- * Function responsible for initialize the ADC driver.
+ * Function initializes GPIO pins PE0 and PE1 for ADC functionality
  */
-void ADC_init(void);
+void ADC_PE0_PE1_init(void);
 
 /*
  * Description :
- * Function responsible for read analog data from a certain ADC channel
- * and convert it to digital using the ADC driver.
+ * Function reads analog data from ADC channel connected to PE0
+ * and converts it to digital using the ADC driver.
  */
-uint16 ADC_readChannel(uint8 channel_num);
+uint16 ADC_read_PE0(void);
+
+/*
+ * Description :
+ * Function reads analog data from ADC channel connected to PE1
+ * and converts it to digital using the ADC driver.
+ */
+uint16 ADC_read_PE1(void);
 
 #endif /* MCAL_ADC_ADC_H_ */

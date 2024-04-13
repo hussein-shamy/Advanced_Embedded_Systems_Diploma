@@ -1,4 +1,4 @@
- /******************************************************************************
+/******************************************************************************
  *
  * Module: ADC
  *
@@ -16,48 +16,76 @@
 
 /*
  * Description :
- * Function responsible for initialize the ADC driver.
+ * Function initializes GPIO pins PE0 and PE1 for ADC functionality
  */
-void ADC_init(void){
+void ADC_PE0_PE1_init(void)
+{
+    /* Enable the ADC clock */
+    SET_BIT(SYSCTL_RCGCADC_REG, 0);
 
-    //PLL
+    /* Enable clock to GPIO Port E */
+    SET_BIT(SYSCTL_RCGCGPIO_REG, 4);
+    while (!(SYSCTL_PRGPIO_REG & 0x10));
 
-    /*Enable the ADC clock using the RCGCADC register */
-    SET_BIT(SYSCTL_RCGCADC_REG,0);
+    /* Configure GPIO PE0 and PE1 as analog inputs */
+    SET_BIT(GPIO_PORTE_AFSEL_REG, 0);
+    SET_BIT(GPIO_PORTE_AFSEL_REG, 1);
+    CLEAR_BIT(GPIO_PORTE_DEN_REG, 0);
+    CLEAR_BIT(GPIO_PORTE_DEN_REG, 1);
+    SET_BIT(GPIO_PORTE_AMSEL_REG, 0);
+    SET_BIT(GPIO_PORTE_AMSEL_REG, 1);
 
-    /* Enable the clock to the appropriate GPIO modules via the RCGCGPIO register [PORTE] */
-    SET_BIT(SYSCTL_RCGCGPIO_REG,4);
-    while(!(SYSCTL_PRGPIO_REG & 0x10));
-
-    /* Set the GPIO AFSEL bits for the ADC input pins */
-    /* PE0, AIN3 */
-    SET_BIT(GPIO_PORTE_AFSEL_REG,0);
-    /* PE1, AIN2 */
-    SET_BIT(GPIO_PORTE_AFSEL_REG,1);
-
-    /* Configure the AINx signals to be analog inputs by clearing the corresponding DEN bit in the
-     *GPIO Digital Enable (GPIODEN) register */
-    /* PE0 */
-    SET_BIT(GPIO_PORTE_DEN_REG,0);
-    /* PE1 */
-    SET_BIT(GPIO_PORTE_DEN_REG,1);
-
-    /* Disable the analog isolation circuit for all ADC input pins */
-    /* PE0 */
-    SET_BIT(GPIO_PORTE_AMSEL_REG,0);
-    /* PE1 */
-    SET_BIT(GPIO_PORTE_AMSEL_REG,1);
-
-
+    /* Initialize Sample Sequencer 3 */
+    CLEAR_BIT(ADC0_ACTSS_REG, ASEN3);       /* Disable SS3 during configuration */
+    ADC0_EMUX_REG = ALWAYS_SAMPLE;          /* Select continuous sampling */
+    ADC0_SSMUX3_REG = PE0_AIN_3;            /* Set PE0 (AIN3) as input */
+    SET_BIT(ADC0_SSCTL3_REG,END0);          /* Enable End of Sequence */
+    SET_BIT(ADC0_SSCTL3_REG,IE0);           /* Enable Sample Interrupt */
+    SET_BIT(ADC0_ACTSS_REG, ASEN3);         /* Enable SS3 after configuration */
 }
+
 /*
  * Description :
- * Function responsible for read analog data from a certain ADC channel
- * and convert it to digital using the ADC driver.
+ * Function reads analog data from ADC channel connected to PE0
+ * and converts it to digital using the ADC driver.
  */
-uint16 ADC_readChannel(uint8 channel_num){
+uint16 ADC_read_PE0(void)
+{
+    uint16 adc_value = 0;
 
+    /* Setting PE0 as an input channel */
+    CLEAR_BIT(ADC0_ACTSS_REG, ASEN3);           /* Disable SS3 during configuration */
+    ADC0_SSMUX3_REG = PE0_AIN_3;                /* Set PE0 (AIN3) as input */
+    SET_BIT(ADC0_ACTSS_REG, ASEN3);             /* Enable SS3 after configuration */
 
+    SET_BIT(ADC0_PSSI_REG, SS3);                /* Initiate sampling */
+    while ((ADC0_RIS_REG & (1 << INR3)) == 0);  /* Wait until sample conversion is completed */
 
+    adc_value = ADC0_SSFIFO3_REG;               /* Read converted value */
+    SET_BIT(ADC0_ISC_REG,IN3);                  /* Clear conversion flag */
 
+    return adc_value;
+}
+
+/*
+ * Description :
+ * Function reads analog data from ADC channel connected to PE1
+ * and converts it to digital using the ADC driver.
+ */
+uint16 ADC_read_PE1(void)
+{
+    uint16 adc_value = 0;
+
+    /* Setting PE1 as an input channel */
+    CLEAR_BIT(ADC0_ACTSS_REG, ASEN3); 			/* Disable SS3 during configuration */
+    ADC0_SSMUX3_REG = PE1_AIN_2; 				/* Set PE1 (AIN2) as input */
+    SET_BIT(ADC0_ACTSS_REG, ASEN3); 			/* Enable SS3 after configuration */
+
+    SET_BIT(ADC0_PSSI_REG, SS3); 				/* Initiate sampling */
+    while ((ADC0_RIS_REG & (1 << INR3)) == 0);  /* Wait until sample conversion is completed */
+
+    adc_value = ADC0_SSFIFO3_REG;				/* Read converted value */
+    ADC0_ISC_REG |= (1 << IN3); 				/* Clear conversion flag */
+
+    return adc_value;
 }
