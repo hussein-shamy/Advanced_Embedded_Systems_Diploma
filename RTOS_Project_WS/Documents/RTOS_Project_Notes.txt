@@ -2,7 +2,7 @@ MCAL Drivers
 - GPIO [DONE]
 - GPTM [DONE]
 - UART [DONE]
-- ADC  [NOT FINISHED YET]
+- ADC  [DONE]
 
 HAL Drivers
 - Buttons 									[DONE]

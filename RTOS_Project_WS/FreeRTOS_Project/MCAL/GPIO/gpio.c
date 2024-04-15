@@ -12,6 +12,9 @@
 #include "gpio.h"
 #include "tm4c123gh6pm_registers.h"
 
+/* Global variable indicates interrupt triggered/not */
+volatile uint8 interrupt_flag = 0;
+
 void GPIO_BuiltinButtonsLedsInit(void)
 {
     /*
@@ -93,6 +96,25 @@ uint8 GPIO_SW2GetState(void)
     return ((GPIO_PORTF_DATA_REG >> 0) & 0x01);
 }
 
+/* GPIO PORTA External Interrupt - ISR */
+void GPIOPortA_Handler(void)
+{
+    interrupt_flag = 1; /* set the variable to indicate that the interrupt is triggered */
+    GPIO_PORTA_ICR_REG   |= (1<<0);       /* Clear Trigger flag for PF0 (Interrupt Flag) */
+}
+
+void GPIOPortF_Handler(void)
+{
+    if((GPIO_PORTF_RIS_REG&0x01)>>0){
+    interrupt_flag = 1; /* set the variable to indicate that the interrupt is triggered */
+    GPIO_PORTF_ICR_REG   |= (1<<0);       /* Clear Trigger flag for PF0 (Interrupt Flag) */
+    }else if ((GPIO_PORTF_RIS_REG&0x10)>>4){
+    interrupt_flag = 1; /* set the variable to indicate that the interrupt is triggered */
+    GPIO_PORTF_ICR_REG   |= (1<<4);       /* Clear Trigger flag for PF0 (Interrupt Flag) */
+    }
+}
+
+
 void GPIO_SW1EdgeTriggeredInterruptInit(void)
 {
     GPIO_PORTF_IS_REG    &= ~(1<<4);      /* PF4 detect edges */
@@ -105,6 +127,7 @@ void GPIO_SW1EdgeTriggeredInterruptInit(void)
     NVIC_EN0_REG         |= 0x40000000;   /* Enable NVIC Interrupt for GPIO PORTF by set bit number 30 in EN0 Register */
 }
 
+
 void GPIO_SW2EdgeTriggeredInterruptInit(void)
 {
     GPIO_PORTF_IS_REG    &= ~(1<<0);      /* PF0 detect edges */
@@ -115,4 +138,32 @@ void GPIO_SW2EdgeTriggeredInterruptInit(void)
     /* Set GPIO PORTF priority as 5 by set Bit number 21, 22 and 23 with value 2 */
     NVIC_PRI7_REG = (NVIC_PRI7_REG & GPIO_PORTF_PRIORITY_MASK) | (GPIO_PORTF_INTERRUPT_PRIORITY<<GPIO_PORTF_PRIORITY_BITS_POS);
     NVIC_EN0_REG         |= 0x40000000;   /* Enable NVIC Interrupt for GPIO PORTF by set bit number 30 in EN0 Register */
+}
+
+void GPIO_SW3EdgeTriggeredInterruptInit(void)
+{
+
+    /* Enable clock for PORTA and wait for clock to start */
+    SYSCTL_RCGCGPIO_REG |= 0x01;
+    while (!(SYSCTL_PRGPIO_REG & 0x01));
+
+    /******************* Configure PA7 as input PIN ***********************************************/
+    GPIO_PORTA_LOCK_REG = 0x4C4F434B; /* Unlock the GPIO_PORTA_CR_REG */
+    GPIO_PORTA_CR_REG |= (1 << 7); /* Enable changes on PA7 */
+    GPIO_PORTA_AMSEL_REG &= 0x7F; /* Disable Analog on PA7 */
+    GPIO_PORTA_PCTL_REG &= 0x0FFFFFFF; /* Clear PMCx bits for PF0, PF1, PF2, PF3 and PF4 to use it as GPIO pins */
+    GPIO_PORTA_DIR_REG &= ~(1 << 7); /* Configure PA7 input pins */
+    GPIO_PORTA_AFSEL_REG &= 0x7F; /* Disable alternative function on PA7 */
+    GPIO_PORTA_PUR_REG |= (1 << 7); /* Enable pull-up on PA7 */
+    GPIO_PORTA_DEN_REG |= (1 << 7); /* Enable Digital I/O on PA7 */
+
+    /******************* Interrupt Enable on PA7 ***********************************************/
+    GPIO_PORTA_IS_REG &= ~(1 << 7); /* PA7 detect edges */
+    GPIO_PORTA_IBE_REG &= ~(1 << 7); /* PA7 will detect a certain edge */
+    GPIO_PORTA_IEV_REG &= ~(1 << 7); /* PA7 will detect a falling edge */
+    GPIO_PORTA_ICR_REG |= (1 << 7); /* Clear Trigger flag for PA7 (Interrupt Flag) */
+    GPIO_PORTA_IM_REG |= (1 << 7); /* Enable Interrupt on PA7 pin */
+    /* Set GPIO PORTA priority as 5 by set Bit number 21, 22 and 23 with value 2 */
+    NVIC_PRI0_REG = (NVIC_PRI0_REG & 0xFFFFFF1F) | (GPIO_PORTF_INTERRUPT_PRIORITY << 5);
+    NVIC_EN0_REG |= 0x00000001; /* Enable NVIC Interrupt for GPIO PORTA by set bit number 0 in EN0 Register */
 }
