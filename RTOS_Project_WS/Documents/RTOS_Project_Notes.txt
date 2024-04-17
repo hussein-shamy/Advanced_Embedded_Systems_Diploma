@@ -1,8 +1,8 @@
 MCAL Drivers
-- GPIO [DONE]
-- GPTM [DONE]
-- UART [DONE]
-- ADC  [DONE]
+- GPIO 										[DONE]
+- GPTM 										[DONE]
+- UART 										[DONE]
+- ADC  										[DONE]
 
 HAL Drivers
 - Buttons 									[DONE]
@@ -12,12 +12,22 @@ HAL Drivers
 - NVM		     							[NOT FINISHED YET]
 
 RTOS Tasks (High to Low Priority)
-- Set_Temp_Button			ISR
-- Read_Temp_LM35			5
-- Select_Intensity_Level	4
-- Control_Temp_Heater		3
+- Set_Temp_Button			ISR				[DONE]
+- Read_Temp_LM35			5				[DONE]
+- Select_Intensity_Level	4					[DONE]
+- Control_Temp_Heater		3					
 - Display_Data_LCD			2
 - Store_Diagnosics_NVM		1
 - Run_Time_Measurement		-		
 
 
+
+Breif Description:
+
+Read Temperature for Driver's Seat
+Read Temperature for Passenger's Seat
+Set Heating Intensity for Driver's Seat
+Set Heating Intensity for Passenger's Seat
+Control Heating for Driver's Seat
+Control Heating for Passenger's Seat
+Display Temperature Data on LCD Screen

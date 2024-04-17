@@ -12,8 +12,8 @@
 #include "gpio.h"
 #include "tm4c123gh6pm_registers.h"
 
-/* Global variable indicates interrupt triggered/not */
-volatile uint8 interrupt_flag = 0;
+/* Global variable indicates the state of seats  */
+volatile uint8 g_Button_States[NO_OF_SEATES]= {HEATER_OFF,HEATER_OFF};
 
 void GPIO_BuiltinButtonsLedsInit(void)
 {
@@ -71,6 +71,11 @@ void GPIO_GreenLedOff(void)
     GPIO_PORTF_DATA_REG &= ~(1<<3);  /* Green LED OFF */
 }
 
+void GPIO_AllLedOff(void)
+{
+    GPIO_PORTF_DATA_REG &= 0xFFF1;  /* All LEDs OFF */
+}
+
 void GPIO_RedLedToggle(void)
 {
     GPIO_PORTF_DATA_REG ^= (1<<1);  /* Red LED is toggled */
@@ -99,18 +104,37 @@ uint8 GPIO_SW2GetState(void)
 /* GPIO PORTA External Interrupt - ISR */
 void GPIOPortA_Handler(void)
 {
-    interrupt_flag = 1; /* set the variable to indicate that the interrupt is triggered */
+    if(g_Button_States[Driver_Seat]<HEATER_HIGH){
+    g_Button_States[Driver_Seat]++;
+    }else{
+    g_Button_States[Driver_Seat] =HEATER_OFF;
+    }
     GPIO_PORTA_ICR_REG   |= (1<<0);       /* Clear Trigger flag for PF0 (Interrupt Flag) */
 }
 
 void GPIOPortF_Handler(void)
 {
     if((GPIO_PORTF_RIS_REG&0x01)>>0){
-    interrupt_flag = 1; /* set the variable to indicate that the interrupt is triggered */
+
+    if(g_Button_States[Driver_Seat]<HEATER_HIGH){
+    g_Button_States[Driver_Seat]++;
+    }else{
+    g_Button_States[Driver_Seat] =HEATER_OFF;
+    }
+
     GPIO_PORTF_ICR_REG   |= (1<<0);       /* Clear Trigger flag for PF0 (Interrupt Flag) */
+
+
     }else if ((GPIO_PORTF_RIS_REG&0x10)>>4){
-    interrupt_flag = 1; /* set the variable to indicate that the interrupt is triggered */
-    GPIO_PORTF_ICR_REG   |= (1<<4);       /* Clear Trigger flag for PF0 (Interrupt Flag) */
+
+    if(g_Button_States[Passenger_Seat]<HEATER_HIGH){
+    g_Button_States[Passenger_Seat]++;
+    }else{
+    g_Button_States[Passenger_Seat] =HEATER_OFF;
+    }
+
+    GPIO_PORTF_ICR_REG   |= (1<<4);       /* Clear Trigger flag for PF4 (Interrupt Flag) */
+
     }
 }
 

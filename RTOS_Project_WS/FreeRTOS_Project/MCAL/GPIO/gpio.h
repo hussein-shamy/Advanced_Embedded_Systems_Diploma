@@ -19,11 +19,22 @@
 #define GPIO_PORTF_PRIORITY_BITS_POS  21
 #define GPIO_PORTF_INTERRUPT_PRIORITY 5
 
-#define PRESSED                ((uint8)0x00)
-#define RELEASED               ((uint8)0x01)
+#define PRESSED                 ((uint8)0x00)
+#define RELEASED                ((uint8)0x01)
 
-#define SW1_PF4                ((uint8)0)
-#define SW2_PF0                ((uint8)1)
+#define SW1_PF4                 ((uint8)0)
+#define SW2_PF0                 ((uint8)1)
+
+#define NO_OF_SEATES            ((uint8)2)
+#define Driver_Seat             ((uint8)0)
+#define Passenger_Seat          ((uint8)1)
+
+#define HEATER_OFF              ((uint8)0)
+#define HEATER_LOW              ((uint8)1)
+#define HEATER_MEDIUM           ((uint8)2)
+#define HEATER_HIGH             ((uint8)3)
+
+extern volatile uint8 g_Button_States[NO_OF_SEATES];
 
 /* Enable Exceptions ... This Macro enable IRQ interrupts, Programmable Systems Exceptions and Faults by clearing the I-bit in the PRIMASK. */
 #define Enable_Exceptions()    __asm(" CPSIE I ")
@@ -51,6 +62,7 @@ void GPIO_GreenLedOn(void);
 void GPIO_RedLedOff(void);
 void GPIO_BlueLedOff(void);
 void GPIO_GreenLedOff(void);
+void GPIO_AllLedOff(void);
 
 void GPIO_RedLedToggle(void);
 void GPIO_BlueLedToggle(void);
