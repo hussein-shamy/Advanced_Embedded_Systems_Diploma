@@ -28,7 +28,7 @@ static void prvSetupHardware(void);
 
 /* FreeRTOS tasks */
 void vPeriodic_Task_ReadTemp_Seat(void *pvParameters);
-//void vPeriodic_Task_SetIntensity_Seat(void *pvParameters);
+void vPeriodic_Task_SetIntensity_Seat(void *pvParameters);
 void vPeriodic_Task_ControlHeating_Seat(void *pvParameters);
 void vPeriodic_Task_DisplayTempData_LCD(void *pvParameters);
 
@@ -44,49 +44,49 @@ int main(void)
     /* Create Tasks here */
     xTaskCreate(vPeriodic_Task_ReadTemp_Seat,
                 "Read Temperature for Driver's Seat",
-                256,
+                512,
                 (void*) Driver_Seat,
                 4,
                 NULL);
 
     xTaskCreate(vPeriodic_Task_ReadTemp_Seat,
                 "Read Temperature for Passenger's Seat",
-                256,
+                512,
                 (void*) Passenger_Seat,
                 4,
                 NULL);
-#ifndef 0
+
     xTaskCreate(vPeriodic_Task_SetIntensity_Seat,
                 "Set Heating Intensity for Driver's Seat",
-                256,
+                512,
                 (void*) Driver_Seat,
                 3,
                 NULL);
 
     xTaskCreate(vPeriodic_Task_SetIntensity_Seat,
                 "Set Heating Intensity for Passenger's Seat",
-                256,
+                512,
                 (void*) Passenger_Seat,
                 3,
                 NULL);
-#endif
+
     xTaskCreate(vPeriodic_Task_ControlHeating_Seat,
                 "Control Heating for Driver's Seat",
-                256,
+                512,
                 (void*) Driver_Seat,
                 2,
                 NULL);
 
     xTaskCreate(vPeriodic_Task_ControlHeating_Seat,
                 "Control Heating for Passenger's Seat",
-                256,
+                512,
                 (void*) Passenger_Seat,
                 2,
                 NULL);
 
     xTaskCreate(vPeriodic_Task_DisplayTempData_LCD,
                 "Display Temperature Data on LCD Screen",
-                256,
+                512,
                 NULL,
                 2,
                 NULL);
@@ -148,7 +148,6 @@ void vPeriodic_Task_ReadTemp_Seat(void *pvParameters)
     }
 }
 
-#ifdef 0
 
 void vPeriodic_Task_SetIntensity_Seat(void *pvParameters)
 {
@@ -269,7 +268,6 @@ void vPeriodic_Task_SetIntensity_Seat(void *pvParameters)
     }
 }
 
-#endif
 
 void vPeriodic_Task_ControlHeating_Seat(void *pvParameters)
 {
