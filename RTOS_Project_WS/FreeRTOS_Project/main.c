@@ -44,52 +44,53 @@ int main(void)
     /* Create Tasks here */
     xTaskCreate(vPeriodic_Task_ReadTemp_Seat,
                 "Read Temperature for Driver's Seat",
-                512,
+                64,
                 (void*) Driver_Seat,
                 4,
                 NULL);
 
     xTaskCreate(vPeriodic_Task_ReadTemp_Seat,
                 "Read Temperature for Passenger's Seat",
-                512,
+                64,
                 (void*) Passenger_Seat,
                 4,
                 NULL);
 
     xTaskCreate(vPeriodic_Task_SetIntensity_Seat,
                 "Set Heating Intensity for Driver's Seat",
-                512,
+                64,
                 (void*) Driver_Seat,
                 3,
                 NULL);
 
     xTaskCreate(vPeriodic_Task_SetIntensity_Seat,
                 "Set Heating Intensity for Passenger's Seat",
-                512,
+                64,
                 (void*) Passenger_Seat,
                 3,
                 NULL);
 
     xTaskCreate(vPeriodic_Task_ControlHeating_Seat,
                 "Control Heating for Driver's Seat",
-                512,
+                64,
                 (void*) Driver_Seat,
                 2,
                 NULL);
 
     xTaskCreate(vPeriodic_Task_ControlHeating_Seat,
                 "Control Heating for Passenger's Seat",
-                512,
+                64,
                 (void*) Passenger_Seat,
                 2,
                 NULL);
 
     xTaskCreate(vPeriodic_Task_DisplayTempData_LCD,
                 "Display Temperature Data on LCD Screen",
-                512,
+                128,
                 NULL,
-                2,
+                1,
                 NULL);
+
 
     /* Now all the tasks have been started - start the scheduler.
 
@@ -340,6 +341,7 @@ void vPeriodic_Task_ControlHeating_Seat(void *pvParameters)
     }
 }
 
+
 void vPeriodic_Task_DisplayTempData_LCD(void *pvParameters)
 {
     TickType_t xLastWakeTime = xTaskGetTickCount();
@@ -350,7 +352,6 @@ void vPeriodic_Task_DisplayTempData_LCD(void *pvParameters)
         UART0_SendString("=============================================================\r\n");
         UART0_SendString("                          DASHBOARD                          \r\n");
         UART0_SendString("=============================================================\r\n");
-
         UART0_SendString("Driver Seat\r\n");
         UART0_SendString("Current Temperature: ");
         UART0_SendByte(g_Seats_Temp[Driver_Seat]);
@@ -378,5 +379,6 @@ void vPeriodic_Task_DisplayTempData_LCD(void *pvParameters)
         vTaskDelayUntil( &xLastWakeTime, pdMS_TO_TICKS( 8000 ) );
     }
 }
+
 
 /*-----------------------------------------------------------*/

@@ -63,7 +63,7 @@
  * or heap_4.c are included in the build. This value is defaulted to 4096 bytes but
  * it must be tailored to each application. Note the heap will appear in the .bss
  * section. */
-#define configTOTAL_HEAP_SIZE                 ((size_t)(8000))//4096
+#define configTOTAL_HEAP_SIZE                 ((size_t)(10240))//
 
 /******************************************************************************/
 /* Definitions that include or exclude functionality. *************************/
