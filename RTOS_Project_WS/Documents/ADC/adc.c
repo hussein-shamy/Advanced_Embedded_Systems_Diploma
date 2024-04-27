@@ -37,6 +37,7 @@ void ADC_PE0_PE1_init(void)
 
     /* Initialize Sample Sequencer 3 */
     CLEAR_BIT(ADC0_ACTSS_REG, ASEN3);       /* Disable SS3 during configuration */
+    ADC0_EMUX_REG = ALWAYS_SAMPLE;          /* Select continuous sampling */
     ADC0_SSMUX3_REG = PE0_AIN_3;            /* Set PE0 (AIN3) as input */
     SET_BIT(ADC0_SSCTL3_REG,END0);          /* Enable End of Sequence */
     SET_BIT(ADC0_SSCTL3_REG,IE0);           /* Enable Sample Interrupt */

@@ -14,6 +14,8 @@
 #define GPIO_H_
 
 #include "std_types.h"
+#include "FreeRTOS.h"
+#include "semphr.h"
 
 #define GPIO_PORTF_PRIORITY_MASK      0xFF1FFFFF
 #define GPIO_PORTF_PRIORITY_BITS_POS  21
@@ -24,17 +26,6 @@
 
 #define SW1_PF4                 ((uint8)0)
 #define SW2_PF0                 ((uint8)1)
-
-#define NO_OF_SEATES            ((uint8)2)
-#define Driver_Seat             ((uint8)0)
-#define Passenger_Seat          ((uint8)1)
-
-#define HEATER_OFF              ((uint8)0)
-#define HEATER_LOW              ((uint8)1)
-#define HEATER_MEDIUM           ((uint8)2)
-#define HEATER_HIGH             ((uint8)3)
-
-extern volatile uint8 g_Button_States[NO_OF_SEATES];
 
 /* Enable Exceptions ... This Macro enable IRQ interrupts, Programmable Systems Exceptions and Faults by clearing the I-bit in the PRIMASK. */
 #define Enable_Exceptions()    __asm(" CPSIE I ")
@@ -75,4 +66,5 @@ void GPIO_SW1EdgeTriggeredInterruptInit(void);
 void GPIO_SW2EdgeTriggeredInterruptInit(void);
 void GPIO_SW3EdgeTriggeredInterruptInit(void);
 
+extern void (*PORTF_Call_Back_Func[2])(void);
 #endif /* GPIO_H_ */

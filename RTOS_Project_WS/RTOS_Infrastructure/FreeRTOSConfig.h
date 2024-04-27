@@ -42,13 +42,7 @@
 
 /* Set configUSE_PREEMPTION to 1 to use pre-emptive scheduling. Set
  * configUSE_PREEMPTION to 0 to use co-operative scheduling. */
-#define configUSE_PREEMPTION                  (1)
-
-/* Set configUSE_TIME_SLICING to 1 to have the scheduler switch between Ready
- * state tasks of equal priority on every tick interrupt.  Set
- * configUSE_TIME_SLICING to 0 to prevent the scheduler switching between Ready
- * state tasks just because there was a tick interrupt. */
-#define configUSE_TIME_SLICING                (0)
+#define configUSE_PREEMPTION                  (1)                
 
 /* When configUSE_16_BIT_TICKS is set to 1, TickType_t is defined
  * to be an unsigned 16-bit type. When configUSE_16_BIT_TICKS is set to 0, 
@@ -63,7 +57,7 @@
  * or heap_4.c are included in the build. This value is defaulted to 4096 bytes but
  * it must be tailored to each application. Note the heap will appear in the .bss
  * section. */
-#define configTOTAL_HEAP_SIZE                 ((size_t)(10240))//
+#define configTOTAL_HEAP_SIZE                 ((size_t)(4096))
 
 /******************************************************************************/
 /* Definitions that include or exclude functionality. *************************/
@@ -72,10 +66,9 @@
 /* Set the following INCLUDE_* constants to 1 to include the named API function,
  * or 0 to exclude the named API function.  Most linkers will remove unused
  * functions even when the constant is 1. */
-#define INCLUDE_vTaskDelay                     0
-#define INCLUDE_vTaskDelayUntil                1
-#define INCLUDE_xTimerPendFunctionCall         1
-#define INCLUDE_vTaskSuspend                   0
+#define INCLUDE_vTaskDelay                      1
+#define INCLUDE_xTimerPendFunctionCall          1
+
 /******************************************************************************/
 /* Software timer related definitions. ****************************************/
 /******************************************************************************/
@@ -88,7 +81,7 @@
 
 /* configTIMER_TASK_PRIORITY sets the priority used by the timer task.  Only
  * used if configUSE_TIMERS is set to 1.  The timer task is a standard FreeRTOS
- * task, so its priority is set like any other task. Only used if configUSE_TIMERS
+ * task, so its priority is set like any other task. Only used if configUSE_TIMERS 
  * is set to 1. */
 #define configTIMER_TASK_PRIORITY             (configMAX_PRIORITIES - 1)
 
