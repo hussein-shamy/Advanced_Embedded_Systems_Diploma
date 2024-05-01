@@ -16,9 +16,10 @@
 
 #define NUMBER_OF_ITERATIONS_PER_ONE_MILI_SECOND 369
 
-#define LOW_INTENSITY       ((uint8)1)
-#define MED_INTENSITY       ((uint8)2)
-#define HIGH_INTENSITY      ((uint8)3)
+#define TEMP_OUT_OF_RANGE_ERROR ((uint8)44)
+#define LOW_INTENSITY           ((uint8)1)
+#define MED_INTENSITY           ((uint8)2)
+#define HIGH_INTENSITY          ((uint8)3)
 
 #define NO_OF_SEATES            ((uint8)2)
 #define Driver_Seat             ((uint8)0)
@@ -48,6 +49,8 @@ extern sint16 g_Seats_Temp[NO_OF_SEATES];
 extern uint8 g_Heater_intensity[NO_OF_SEATES];
 extern EventGroupHandle_t xEventGroup;
 extern EventGroupHandle_t xEventGroup2;
+extern QueueHandle_t xQueue_Button_Driver_State;
+extern QueueHandle_t xQueue_Button_Passenger_State;
 
 /* FreeRTOS tasks */
 void vPeriodic_Task_ReadTemp_Seat(void *pvParameters);

@@ -5,13 +5,17 @@
 #include "App.h"
 #include "task.h"
 #include "event_groups.h"
+#include "queue.h"
 
 /* global variables*/
-volatile uint8 g_Button_States[NO_OF_SEATES]= {HEATER_LOW,HEATER_OFF};
+volatile uint8 g_Button_States[NO_OF_SEATES]= {HEATER_OFF,HEATER_OFF};
 sint16 g_Seats_Temp[NO_OF_SEATES] = { 0, 0 };
 uint8 g_Heater_intensity[NO_OF_SEATES] = {HEATER_OFF,HEATER_OFF};
 EventGroupHandle_t xEventGroup;
 EventGroupHandle_t xEventGroup2;
+QueueHandle_t xQueue_Button_Driver_State;
+QueueHandle_t xQueue_Button_Passenger_State;
+
 
 void Delay_MS(unsigned long long n)
 {
@@ -33,8 +37,8 @@ void vPeriodic_Task_ReadTemp_Seat(void *pvParameters)
         {
         case Driver_Seat:
             adc_value = ADC_read_PE0();
-            g_Seats_Temp[Driver_Seat] = (uint8) (((uint32)adc_value * 40)/ 4095);
-            if(previous_temperature[Driver_Seat] < g_Seats_Temp[Driver_Seat] -3 || previous_temperature[Driver_Seat] > g_Button_States[Driver_Seat] +3){
+            g_Seats_Temp[Driver_Seat] = (uint8) (((uint32)adc_value * 45)/ 4095);
+            if(previous_temperature[Driver_Seat] < g_Seats_Temp[Driver_Seat] -3 || previous_temperature[Driver_Seat] > g_Seats_Temp[Driver_Seat] +3){
                 xEventGroupSetBits(xEventGroup, AppTemp_Driver_Changed_BIT);
             }
             previous_temperature[Driver_Seat] = g_Seats_Temp[Driver_Seat];
@@ -42,14 +46,14 @@ void vPeriodic_Task_ReadTemp_Seat(void *pvParameters)
         case Passenger_Seat:
             adc_value = ADC_read_PE1();
             g_Seats_Temp[Passenger_Seat] = (uint8)(148 - ((uint32)(248 * adc_value)/4096));
-            if(previous_temperature[Passenger_Seat] < g_Seats_Temp[Passenger_Seat] -3 || previous_temperature[Passenger_Seat] > g_Button_States[Passenger_Seat] +3){
+            if(previous_temperature[Passenger_Seat] < g_Seats_Temp[Passenger_Seat] -3 || previous_temperature[Passenger_Seat] > g_Seats_Temp[Passenger_Seat] +3){
                 xEventGroupSetBits(xEventGroup, AppTemp_Passenger_Changed_BIT);
             }
             previous_temperature[Passenger_Seat] = g_Seats_Temp[Passenger_Seat];
             break;
         }
 
-        vTaskDelayUntil( &xLastWakeTime, pdMS_TO_TICKS( 10000 ) );
+        vTaskDelayUntil( &xLastWakeTime, pdMS_TO_TICKS( 5000 ) );
     }
 }
 
@@ -83,9 +87,15 @@ void vPeriodic_Task_SetIntensity_Seat(void *pvParameters)
              *                                                          Driver Pressed
              **************************************************************************************************************************/
             current_temp = g_Seats_Temp[Driver_Seat];
-            desiresd_temp = g_Button_States[Driver_Seat];
+
+            xQueueReceive(xQueue_Button_Driver_State,&desiresd_temp,0);
+
             current_intensity = g_Heater_intensity[Driver_Seat];
 
+            if(current_temp < 5 || current_temp >40){
+                g_Heater_intensity[Driver_Seat] = TEMP_OUT_OF_RANGE_ERROR;
+            }
+            else{
             if (current_intensity != HEATER_OFF)
             {
 
@@ -128,10 +138,10 @@ void vPeriodic_Task_SetIntensity_Seat(void *pvParameters)
                 }
 
             }
+        }
             xEventGroupSetBits(xEventGroup2, AppIntensity_Driver_Selected_BIT);
             /*End of Driver pressed*/
         }
-
         if (((xEventGroupValue & AppTemp_Passenger_Changed_BIT) != 0)||(((xEventGroupValue & AppButton_Passenger_Pressed_BIT) != 0) && seat_type == Driver_Seat)){
             /***************************************************************************************************************************
              *                                                          Passenger Pressed
@@ -141,6 +151,10 @@ void vPeriodic_Task_SetIntensity_Seat(void *pvParameters)
             desiresd_temp = g_Button_States[Passenger_Seat];
             current_intensity = g_Heater_intensity[Passenger_Seat];
 
+            if(current_temp < 5 || current_temp >40){
+                g_Heater_intensity[Passenger_Seat] = TEMP_OUT_OF_RANGE_ERROR;
+            }
+            else{
             if (current_intensity != HEATER_OFF)
             {
 
@@ -182,6 +196,7 @@ void vPeriodic_Task_SetIntensity_Seat(void *pvParameters)
                 }
 
             }
+            }
             xEventGroupSetBits(xEventGroup2, AppIntensity_Passenger_Selected_BIT);
         /*End of Passenger pressed*/
         }
@@ -214,6 +229,11 @@ void vPeriodic_Task_ControlHeating_Seat(void *pvParameters)
 
             switch (current_intensity)
             {
+            case TEMP_OUT_OF_RANGE_ERROR:
+                GPIO_AllLedOff();
+                GPIO_RedLedOn();
+                break;
+
             case HEATER_OFF:
                 GPIO_AllLedOff();
                 break;
@@ -242,8 +262,13 @@ void vPeriodic_Task_ControlHeating_Seat(void *pvParameters)
 
             switch (current_intensity)
             {
-            case HEATER_OFF:
+            case TEMP_OUT_OF_RANGE_ERROR:
                 GPIO_AllLedOff();
+                GPIO_RedLedOn();
+                break;
+
+            case HEATER_OFF:
+                //GPIO_AllLedOff();
                 break;
 
             case LOW_INTENSITY:
@@ -302,14 +327,14 @@ void vPeriodic_Task_DisplayTempData_LCD(void *pvParameters)
         UART0_SendInteger(g_Heater_intensity[Passenger_Seat]);
         UART0_SendString("\r\n");
 
-        vTaskDelayUntil( &xLastWakeTime, pdMS_TO_TICKS( 10000 ) );
+        vTaskDelayUntil( &xLastWakeTime, pdMS_TO_TICKS( 5000 ) );
     }
 }
 
 
 void DriverButtonPressed(void){
     BaseType_t pxHigherPriorityTaskWoken = pdFALSE;
-    uint8 current = g_Button_States[Driver_Seat];
+    static uint8 current = 0;
     uint8 next = 0;
     if(current == HEATER_OFF){
         next = HEATER_LOW;
@@ -320,7 +345,11 @@ void DriverButtonPressed(void){
     }else if(current == HEATER_HIGH){
         next = HEATER_OFF;
     }
-    g_Button_States[Driver_Seat] = next;
+
+    current = next;
+
+    xQueueSendFromISR (xQueue_Button_Driver_State, &current , &pxHigherPriorityTaskWoken);
+
     xEventGroupSetBitsFromISR(xEventGroup, AppButton_Driver_Pressed_BIT,&pxHigherPriorityTaskWoken);
 }
 
