@@ -32,14 +32,17 @@ static void prvSetupHardware(void)
 
 static void CreateTasks (void){
 
-    /* Create two binary semaphores */
-    xEventGroup = xEventGroupCreate();
-    xEventGroup2 = xEventGroupCreate();
-    xBinarySemaphore_Heater_Intensity_Setted_Driver_Seat = xSemaphoreCreateBinary();
-    xBinarySemaphore_Heater_Intensity_Setted_Passernger_Seat = xSemaphoreCreateBinary();
-    xQueue_Button_Driver_State = xQueueCreate(2, sizeof(uint8));
-    xQueue_Button_Passenger_State = xQueueCreate(2, sizeof(uint8));
+    xEventGroup_Set_Intensity = xEventGroupCreate();
+    xEventGroup_ControlHeating = xEventGroupCreate();
 
+    xQueue_Button_Driver_State = xQueueCreate(1, sizeof(uint8));
+    xQueue_Button_Passenger_State = xQueueCreate(1, sizeof(uint8));
+
+    xQueue_Temp_Driver = xQueueCreate(1, sizeof(uint8));
+    xQueue_Temp_Passenger = xQueueCreate(1, sizeof(uint8));
+
+    xQueue_Intensity_Driver = xQueueCreate(1, sizeof(uint8));
+    xQueue_Intensity_Passenger =xQueueCreate(1, sizeof(uint8));
 
      /* Create Tasks here */
      xTaskCreate(vPeriodic_Task_ReadTemp_Seat,

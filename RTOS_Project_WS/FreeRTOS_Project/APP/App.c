@@ -7,15 +7,17 @@
 #include "event_groups.h"
 #include "queue.h"
 
-/* global variables*/
-volatile uint8 g_Button_States[NO_OF_SEATES]= {HEATER_OFF,HEATER_OFF};
-sint16 g_Seats_Temp[NO_OF_SEATES] = { 0, 0 };
-uint8 g_Heater_intensity[NO_OF_SEATES] = {HEATER_OFF,HEATER_OFF};
-EventGroupHandle_t xEventGroup;
-EventGroupHandle_t xEventGroup2;
+EventGroupHandle_t xEventGroup_Set_Intensity;
+EventGroupHandle_t xEventGroup_ControlHeating;
+
 QueueHandle_t xQueue_Button_Driver_State;
 QueueHandle_t xQueue_Button_Passenger_State;
 
+QueueHandle_t xQueue_Temp_Driver;
+QueueHandle_t xQueue_Temp_Passenger;
+
+QueueHandle_t xQueue_Intensity_Driver;
+QueueHandle_t xQueue_Intensity_Passenger;
 
 void Delay_MS(unsigned long long n)
 {
@@ -27,205 +29,140 @@ void Delay_MS(unsigned long long n)
 void vPeriodic_Task_ReadTemp_Seat(void *pvParameters)
 {
     TickType_t xLastWakeTime = xTaskGetTickCount();
-    uint8 previous_temperature[NO_OF_SEATES] = {0,0};
+    sint8 previous_temperature = 0;
+    sint8 current_temperature = 0;
+    uint32 adc_value = 0;
+
     for (;;)
     {
-        /* Implementation */
-        uint32 adc_value = 0;
-        uint8 seat_type = (uint8) pvParameters;
-        switch (seat_type)
+        switch ((uint8) pvParameters)
         {
         case Driver_Seat:
             adc_value = ADC_read_PE0();
-            g_Seats_Temp[Driver_Seat] = (uint8) (((uint32)adc_value * 45)/ 4095);
-            if(previous_temperature[Driver_Seat] < g_Seats_Temp[Driver_Seat] -3 || previous_temperature[Driver_Seat] > g_Seats_Temp[Driver_Seat] +3){
-                xEventGroupSetBits(xEventGroup, AppTemp_Driver_Changed_BIT);
-            }
-            previous_temperature[Driver_Seat] = g_Seats_Temp[Driver_Seat];
+            current_temperature = (uint8) (((uint32)adc_value * 45)/ 4095);
+            xQueueSend(xQueue_Temp_Driver,&current_temperature,0);
+            if(previous_temperature < current_temperature -3 || previous_temperature > current_temperature +3){
+                xEventGroupSetBits(xEventGroup_Set_Intensity, AppTemp_Driver_Changed_BIT);
+             }
             break;
         case Passenger_Seat:
             adc_value = ADC_read_PE1();
-            g_Seats_Temp[Passenger_Seat] = (uint8)(148 - ((uint32)(248 * adc_value)/4096));
-            if(previous_temperature[Passenger_Seat] < g_Seats_Temp[Passenger_Seat] -3 || previous_temperature[Passenger_Seat] > g_Seats_Temp[Passenger_Seat] +3){
-                xEventGroupSetBits(xEventGroup, AppTemp_Passenger_Changed_BIT);
+            current_temperature = (uint8)(148 - ((uint32)(248 * adc_value)/4096));
+            xQueueSend(xQueue_Temp_Passenger,&current_temperature,0);
+            if(previous_temperature < current_temperature -3 || previous_temperature > current_temperature +3){
+                xEventGroupSetBits(xEventGroup_Set_Intensity, AppTemp_Passenger_Changed_BIT);
             }
-            previous_temperature[Passenger_Seat] = g_Seats_Temp[Passenger_Seat];
             break;
         }
 
-        vTaskDelayUntil( &xLastWakeTime, pdMS_TO_TICKS( 5000 ) );
+
+        previous_temperature = current_temperature;
+
+        vTaskDelayUntil( &xLastWakeTime, pdMS_TO_TICKS( 10000 ) );
+
     }
+
 }
 
 
 void vPeriodic_Task_SetIntensity_Seat(void *pvParameters)
 {
+    QueueHandle_t xQueue_Temp_Current_Task = 0;
+    QueueHandle_t xQueue_Intensity_Current_Task = 0;
+
     EventBits_t xEventGroupValue;
+    uint8 flag = pdFALSE;
     const EventBits_t xBitsToWaitFor = (  AppButton_Driver_Pressed_BIT
-                                        | AppButton_Passenger_Pressed_BIT
-                                        | AppTemp_Driver_Changed_BIT
-                                        | AppTemp_Passenger_Changed_BIT);
+            | AppTemp_Driver_Changed_BIT
+            | AppButton_Passenger_Pressed_BIT
+            | AppTemp_Passenger_Changed_BIT);
     for (;;)
     {
+
+        uint8 current_intensity = 0;
         uint8 current_temp = 0;
         uint8 desiresd_temp = 0;
-        uint8 current_intensity = 0;
-        uint8 seat_type = (uint8) pvParameters;
-        /***************************************************************************************************************************
-         *                                                          Wait
-         **************************************************************************************************************************/
         /* Block to wait for event bits to become set within the event group. */
-        xEventGroupValue = xEventGroupWaitBits( xEventGroup,    /* The event group to read. */
-                                                xBitsToWaitFor, /* Bits to test. */
-                                                pdTRUE,         /* Clear bits on exit if the unblock condition is met. */
-                                                pdFALSE,        /* Don't wait for all bits. */
-                                                portMAX_DELAY); /* Don't time out. */
+        xEventGroupValue = xEventGroupWaitBits( xEventGroup_Set_Intensity,    /* The event group to read. */
+                                                xBitsToWaitFor, 			  /* Bits to test. */
+                                                pdTRUE,         			  /* Clear bits on exit if the unblock condition is met. */
+                                                pdFALSE,       			      /* Don't wait for all bits. */
+                                                portMAX_DELAY); 			  /* Don't time out. */
 
-        if (((xEventGroupValue & AppTemp_Driver_Changed_BIT) != 0)||(((xEventGroupValue & AppButton_Driver_Pressed_BIT) != 0) && seat_type == Driver_Seat))
+        if (((xEventGroupValue & AppTemp_Driver_Changed_BIT) != 0)||(((xEventGroupValue & AppButton_Driver_Pressed_BIT) != 0) && (uint8) pvParameters == Driver_Seat))
         {
-            /***************************************************************************************************************************
-             *                                                          Driver Pressed
-             **************************************************************************************************************************/
-            current_temp = g_Seats_Temp[Driver_Seat];
-
-            xQueueReceive(xQueue_Button_Driver_State,&desiresd_temp,0);
-
-            current_intensity = g_Heater_intensity[Driver_Seat];
-
-            if(current_temp < 5 || current_temp >40){
-                g_Heater_intensity[Driver_Seat] = TEMP_OUT_OF_RANGE_ERROR;
-            }
-            else{
-            if (current_intensity != HEATER_OFF)
-            {
-
-                if (current_temp < desiresd_temp - 10)
-                {
-
-                    g_Heater_intensity[Driver_Seat] = HIGH_INTENSITY;
-
-                }
-                else if (current_temp >= desiresd_temp - 10
-                        && current_temp < desiresd_temp - 5)
-                {
-
-                    g_Heater_intensity[Driver_Seat] = MED_INTENSITY;
-
-                }
-                else if (current_temp >= desiresd_temp - 5
-                        && current_temp < desiresd_temp - 2)
-                {
-
-                    g_Heater_intensity[Driver_Seat] = LOW_INTENSITY;
-
-                }
-                else if (current_temp > desiresd_temp)
-                {
-
-                    g_Heater_intensity[Driver_Seat] = HEATER_OFF;
-
-                }
-
-            }
-            else
-            {
-
-                if (current_temp < desiresd_temp - 3)
-                {
-
-                    g_Heater_intensity[Driver_Seat] = LOW_INTENSITY;
-
-                }
-
-            }
+            xQueueReceive(xQueue_Button_Driver_State, &desiresd_temp, 0);
+            xQueue_Temp_Current_Task = xQueue_Temp_Driver;
+            xQueue_Intensity_Current_Task = xQueue_Intensity_Driver;
+            xEventGroupSetBits(xEventGroup_ControlHeating,AppIntensity_Driver_Selected_BIT);
+            flag = pdTRUE;
+        }else if (((xEventGroupValue & AppTemp_Passenger_Changed_BIT) != 0)||(((xEventGroupValue & AppButton_Passenger_Pressed_BIT) != 0) && (uint8) pvParameters == Passenger_Seat)){
+            xQueueReceive(xQueue_Button_Passenger_State, &desiresd_temp, 0);
+            xQueue_Temp_Current_Task = xQueue_Temp_Passenger;
+            xQueue_Intensity_Current_Task = xQueue_Intensity_Passenger;
+            xEventGroupSetBits(xEventGroup_ControlHeating,AppIntensity_Passenger_Selected_BIT);
+            flag = pdTRUE;
         }
-            xEventGroupSetBits(xEventGroup2, AppIntensity_Driver_Selected_BIT);
-            /*End of Driver pressed*/
-        }
-        if (((xEventGroupValue & AppTemp_Passenger_Changed_BIT) != 0)||(((xEventGroupValue & AppButton_Passenger_Pressed_BIT) != 0) && seat_type == Driver_Seat)){
-            /***************************************************************************************************************************
-             *                                                          Passenger Pressed
-             **************************************************************************************************************************/
 
-            current_temp = g_Seats_Temp[Passenger_Seat];
-            desiresd_temp = g_Button_States[Passenger_Seat];
-            current_intensity = g_Heater_intensity[Passenger_Seat];
+        if(flag){/* Start of Logic */
 
-            if(current_temp < 5 || current_temp >40){
-                g_Heater_intensity[Passenger_Seat] = TEMP_OUT_OF_RANGE_ERROR;
-            }
-            else{
-            if (current_intensity != HEATER_OFF)
-            {
+            xQueueReceive(xQueue_Temp_Current_Task, &current_temp, 0);
 
-                if (current_temp < desiresd_temp - 10)
-                {
-                    // x<15 (cyan)
-                    g_Heater_intensity[Passenger_Seat] = HIGH_INTENSITY;
+            if(current_temp < 5 || current_temp >40){/* Warning */
+                xQueueSend(xQueue_Intensity_Current_Task,(void*)TEMP_OUT_OF_RANGE_ERROR,0);
+            }/* Warning */
 
-                }
-                else if (current_temp >= desiresd_temp - 10
-                        && current_temp < desiresd_temp - 5)
-                {
-                    // 15  -x- 20 (blue)
-                    g_Heater_intensity[Passenger_Seat] = MED_INTENSITY;
+            else{/* No Warning */
 
-                }
-                else if (current_temp >= desiresd_temp - 5 && current_temp < desiresd_temp - 2)
-                {
-                   //   20 -x- 23 (green)
-                    g_Heater_intensity[Passenger_Seat] = LOW_INTENSITY;
+                if (current_intensity != HEATER_OFF){ /* Heater ON */
 
-                }
-                else if (current_temp > desiresd_temp)
-                {
-                    // x>25 (off)
-                    g_Heater_intensity[Passenger_Seat] = HEATER_OFF;
+                    if (current_temp < desiresd_temp - 10)
+                        xQueueSend(xQueue_Intensity_Current_Task,(void*)HIGH_INTENSITY,0);
 
-                    }
+                    else if (current_temp >= desiresd_temp - 10 && current_temp < desiresd_temp - 5)
+                        xQueueSend(xQueue_Intensity_Current_Task,(void*)MED_INTENSITY,0);
 
-                }
-            else
-            {
+                    else if (current_temp >= desiresd_temp - 5 && current_temp < desiresd_temp - 2)
+                        xQueueSend(xQueue_Intensity_Current_Task,(void*)LOW_INTENSITY,0);
 
-                if (current_temp < desiresd_temp - 3)
-                {
+                    else if (current_temp > desiresd_temp)
+                        xQueueSend(xQueue_Intensity_Current_Task,(void*)HEATER_OFF,0);
 
-                    g_Heater_intensity[Passenger_Seat] = LOW_INTENSITY;
+                }/* Heater ON */
 
-                }
+                else{/* Heater OFF */
+                    if (current_temp < desiresd_temp - 3)
+                        xQueueSend(xQueue_Intensity_Current_Task,(void*)LOW_INTENSITY, 0);
 
-            }
-            }
-            xEventGroupSetBits(xEventGroup2, AppIntensity_Passenger_Selected_BIT);
-        /*End of Passenger pressed*/
-        }
-    }
-}
+                }/* Heater OFF */
 
+            }/* End of No Warning */
+
+            flag = pdFALSE;
+        }/* End of Logic */
+    }/* End of For Loop */
+
+}/* End of Task */
 
 void vPeriodic_Task_ControlHeating_Seat(void *pvParameters)
 {
-    EventBits_t xEventGroupValue;
-    const EventBits_t xBitsToWaitFor = ( AppIntensity_Driver_Selected_BIT | AppIntensity_Passenger_Selected_BIT);
+        uint8 current_intensity = 0;
+        EventBits_t xEventGroupValue;
+        const EventBits_t xBitsToWaitFor = ( AppIntensity_Driver_Selected_BIT | AppIntensity_Passenger_Selected_BIT);
     for (;;)
     {
-        /***************************************************************************************************************************
-         *                                                          Wait
-         **************************************************************************************************************************/
         /* Block to wait for event bits to become set within the event group. */
-        xEventGroupValue = xEventGroupWaitBits( xEventGroup2,    /* The event group to read. */
-                                                xBitsToWaitFor, /* Bits to test. */
-                                                pdTRUE,         /* Clear bits on exit if the unblock condition is met. */
-                                                pdFALSE,        /* Don't wait for all bits. */
-                                                portMAX_DELAY); /* Don't time out. */
-        /* Implementation */
-        uint8 current_intensity = 0;
-        uint8 seat_type = (uint8) pvParameters;
+        xEventGroupValue = xEventGroupWaitBits( xEventGroup_ControlHeating,    /* The event group to read. */
+                                                xBitsToWaitFor,                /* Bits to test. */
+                                                pdTRUE,                        /* Clear bits on exit if the unblock condition is met. */
+                                                pdFALSE,                       /* Don't wait for all bits. */
+                                                portMAX_DELAY);                /* Don't time out. */
 
-        if(((xEventGroupValue & AppIntensity_Driver_Selected_BIT) != 0) && seat_type == Driver_Seat){
+        if(((xEventGroupValue & AppIntensity_Driver_Selected_BIT) != 0) && (uint8)pvParameters == Driver_Seat)
+                xQueueReceive(xQueue_Intensity_Driver, &current_intensity, 0);
 
-            current_intensity =  g_Heater_intensity[Driver_Seat];
+        if(((xEventGroupValue & AppIntensity_Passenger_Selected_BIT) != 0) && (uint8)pvParameters == Passenger_Seat)
+                xQueueReceive(xQueue_Intensity_Passenger, &current_intensity, 0);
 
             switch (current_intensity)
             {
@@ -253,52 +190,32 @@ void vPeriodic_Task_ControlHeating_Seat(void *pvParameters)
                 GPIO_BlueLedOn();
                 GPIO_GreenLedOn();
                 break;
-            }
-
-        }
-        if(((xEventGroupValue & AppIntensity_Passenger_Selected_BIT) != 0) && seat_type == Passenger_Seat){
-
-            current_intensity = g_Heater_intensity[Passenger_Seat];
-
-            switch (current_intensity)
-            {
-            case TEMP_OUT_OF_RANGE_ERROR:
-                GPIO_AllLedOff();
-                GPIO_RedLedOn();
-                break;
-
-            case HEATER_OFF:
-                //GPIO_AllLedOff();
-                break;
-
-            case LOW_INTENSITY:
-                GPIO_AllLedOff();
-                GPIO_GreenLedOn();
-                break;
-
-            case MED_INTENSITY:
-                GPIO_AllLedOff();
-                GPIO_BlueLedOn();
-                break;
-
-            case HIGH_INTENSITY:
-                GPIO_AllLedOff();
-                GPIO_BlueLedOn();
-                GPIO_GreenLedOn();
-                break;
-            }
-
         }
     }
 }
+
 
 
 void vPeriodic_Task_DisplayTempData_LCD(void *pvParameters)
 {
     TickType_t xLastWakeTime = xTaskGetTickCount();
-
+    sint8 Seats_Temp[NO_OF_SEATES] = {0,0};
+    uint8 Button_States[NO_OF_SEATES] = {0,0};
+    uint8 Heater_intensity[NO_OF_SEATES] = {0,0};
     for (;;)
     {
+
+        xQueueReceive(xQueue_Button_Driver_State, &Button_States[Driver_Seat], 0);
+        xQueueReceive(xQueue_Button_Passenger_State, &Button_States[Passenger_Seat], 0);
+
+        xQueueReceive(xQueue_Temp_Driver, &Seats_Temp[Driver_Seat], 0);
+        xQueueReceive(xQueue_Temp_Passenger, &Seats_Temp[Passenger_Seat], 0);
+
+        xQueueReceive(xQueue_Intensity_Driver, &Heater_intensity[Driver_Seat], 0);
+        xQueueReceive(xQueue_Intensity_Passenger,&Heater_intensity[Passenger_Seat], 0);
+
+
+
         /* Implementation */
         UART0_SendString("=============================================================================================\r\n");
         UART0_SendString("===================================== [DASHBOARD] ===========================================\r\n");
@@ -308,26 +225,26 @@ void vPeriodic_Task_DisplayTempData_LCD(void *pvParameters)
         UART0_SendString("---------------------------------------------------------------------------------------------\r\n");
         UART0_SendString("Current Temperature:                     |\r\n");
         UART0_SendString("                      ");
-        UART0_SendInteger(g_Seats_Temp[Driver_Seat]);
+        UART0_SendInteger(Seats_Temp[Driver_Seat]);
         UART0_SendString("                  |                  ");
-        UART0_SendInteger(g_Seats_Temp[Passenger_Seat]);
+        UART0_SendInteger(Seats_Temp[Passenger_Seat]);
         UART0_SendString("\r\n");
 
         UART0_SendString("Desired Temperature:                     |\r\n");
         UART0_SendString("                      ");
-        UART0_SendInteger(g_Button_States[Driver_Seat]);
+        UART0_SendInteger(Button_States[Driver_Seat]);
         UART0_SendString("                 |                  ");
-        UART0_SendInteger(g_Button_States[Passenger_Seat]);
+        UART0_SendInteger(Button_States[Passenger_Seat]);
         UART0_SendString("\r\n");
 
         UART0_SendString("Heater Intensity Temperature:            |\r\n");
         UART0_SendString("                      ");
-        UART0_SendInteger(g_Heater_intensity[Driver_Seat]);
+        UART0_SendInteger(Heater_intensity[Driver_Seat]);
         UART0_SendString("                  |                  ");
-        UART0_SendInteger(g_Heater_intensity[Passenger_Seat]);
+        UART0_SendInteger(Heater_intensity[Passenger_Seat]);
         UART0_SendString("\r\n");
 
-        vTaskDelayUntil( &xLastWakeTime, pdMS_TO_TICKS( 5000 ) );
+        vTaskDelayUntil( &xLastWakeTime, pdMS_TO_TICKS( 10000 ) );
     }
 }
 
@@ -335,38 +252,47 @@ void vPeriodic_Task_DisplayTempData_LCD(void *pvParameters)
 void DriverButtonPressed(void){
     BaseType_t pxHigherPriorityTaskWoken = pdFALSE;
     static uint8 current = 0;
-    uint8 next = 0;
-    if(current == HEATER_OFF){
-        next = HEATER_LOW;
-    }else if(current == HEATER_LOW){
-        next = HEATER_MEDIUM;
-    }else if(current == HEATER_MEDIUM){
-        next = HEATER_HIGH;
-    }else if(current == HEATER_HIGH){
-        next = HEATER_OFF;
+
+    switch (current)
+    {
+    case HEATER_OFF:
+        current = HEATER_LOW;
+        break;
+    case HEATER_LOW:
+        current = HEATER_MEDIUM;
+        break;
+    case HEATER_MEDIUM:
+        current = HEATER_HIGH;
+        break;
+    case HEATER_HIGH:
+        current = HEATER_OFF;
+        break;
     }
-
-    current = next;
-
     xQueueSendFromISR (xQueue_Button_Driver_State, &current , &pxHigherPriorityTaskWoken);
-
-    xEventGroupSetBitsFromISR(xEventGroup, AppButton_Driver_Pressed_BIT,&pxHigherPriorityTaskWoken);
+    xEventGroupSetBitsFromISR(xEventGroup_Set_Intensity, AppButton_Driver_Pressed_BIT,&pxHigherPriorityTaskWoken);
 }
 
 void PassengerButtonPressed(void){
     BaseType_t pxHigherPriorityTaskWoken = pdFALSE;
-    uint8 current = g_Button_States[Driver_Seat];
-    uint8 next = 0;
-    if(current == HEATER_OFF){
-        next = HEATER_LOW;
-    }else if(current == HEATER_LOW){
-        next = HEATER_MEDIUM;
-    }else if(current == HEATER_MEDIUM){
-        next = HEATER_HIGH;
-    }else if(current == HEATER_HIGH){
-        next = HEATER_OFF;
+    static uint8 current = 0;
+
+    switch (current)
+    {
+    case HEATER_OFF:
+        current = HEATER_LOW;
+        break;
+    case HEATER_LOW:
+        current = HEATER_MEDIUM;
+        break;
+    case HEATER_MEDIUM:
+        current = HEATER_HIGH;
+        break;
+    case HEATER_HIGH:
+        current = HEATER_OFF;
+        break;
     }
-    g_Button_States[Passenger_Seat] = next;
-    xEventGroupSetBitsFromISR(xEventGroup, AppButton_Passenger_Pressed_BIT,&pxHigherPriorityTaskWoken);
+
+    xQueueSendFromISR (xQueue_Button_Passenger_State, &current , &pxHigherPriorityTaskWoken);
+    xEventGroupSetBitsFromISR(xEventGroup_Set_Intensity, AppButton_Passenger_Pressed_BIT,&pxHigherPriorityTaskWoken);
 }
 /*-----------------------------------------------------------*/
