@@ -5,7 +5,7 @@
 #include "App.h"
 #include "task.h"
 #include "event_groups.h"
-#include "queue.h"
+//#include "queue.h"
 
 /* global variables*/
 volatile uint8 g_Button_States[NO_OF_SEATES]= {HEATER_OFF,HEATER_OFF};
@@ -13,8 +13,7 @@ sint16 g_Seats_Temp[NO_OF_SEATES] = { 0, 0 };
 uint8 g_Heater_intensity[NO_OF_SEATES] = {HEATER_OFF,HEATER_OFF};
 EventGroupHandle_t xEventGroup;
 EventGroupHandle_t xEventGroup2;
-QueueHandle_t xQueue_Button_Driver_State;
-QueueHandle_t xQueue_Button_Passenger_State;
+
 
 
 void Delay_MS(unsigned long long n)
@@ -88,8 +87,7 @@ void vPeriodic_Task_SetIntensity_Seat(void *pvParameters)
              **************************************************************************************************************************/
             current_temp = g_Seats_Temp[Driver_Seat];
 
-            xQueueReceive(xQueue_Button_Driver_State,&desiresd_temp,0);
-
+            desiresd_temp = g_Button_States[Driver_Seat];
             current_intensity = g_Heater_intensity[Driver_Seat];
 
             if(current_temp < 5 || current_temp >40){
@@ -268,7 +266,7 @@ void vPeriodic_Task_ControlHeating_Seat(void *pvParameters)
                 break;
 
             case HEATER_OFF:
-                //GPIO_AllLedOff();
+                GPIO_AllLedOff();
                 break;
 
             case LOW_INTENSITY:
@@ -308,11 +306,18 @@ void vPeriodic_Task_DisplayTempData_LCD(void *pvParameters)
         UART0_SendString("---------------------------------------------------------------------------------------------\r\n");
         UART0_SendString("Current Temperature:                     |\r\n");
         UART0_SendString("                      ");
+        if(g_Seats_Temp[Driver_Seat] < 5 || g_Seats_Temp[Driver_Seat] >40){
+        UART0_SendString("ERROR");
+        }else{
         UART0_SendInteger(g_Seats_Temp[Driver_Seat]);
+        }
         UART0_SendString("                  |                  ");
+        if(g_Seats_Temp[Passenger_Seat] < 5 || g_Seats_Temp[Passenger_Seat] >40){
+        UART0_SendString("ERROR");
+        }else{
         UART0_SendInteger(g_Seats_Temp[Passenger_Seat]);
+        }
         UART0_SendString("\r\n");
-
         UART0_SendString("Desired Temperature:                     |\r\n");
         UART0_SendString("                      ");
         UART0_SendInteger(g_Button_States[Driver_Seat]);
@@ -334,39 +339,37 @@ void vPeriodic_Task_DisplayTempData_LCD(void *pvParameters)
 
 void DriverButtonPressed(void){
     BaseType_t pxHigherPriorityTaskWoken = pdFALSE;
-    static uint8 current = 0;
-    uint8 next = 0;
+    uint8 current = g_Button_States[Driver_Seat];
+
     if(current == HEATER_OFF){
-        next = HEATER_LOW;
+        current = HEATER_LOW;
     }else if(current == HEATER_LOW){
-        next = HEATER_MEDIUM;
+        current = HEATER_MEDIUM;
     }else if(current == HEATER_MEDIUM){
-        next = HEATER_HIGH;
+        current = HEATER_HIGH;
     }else if(current == HEATER_HIGH){
-        next = HEATER_OFF;
+        current = HEATER_OFF;
     }
 
-    current = next;
-
-    xQueueSendFromISR (xQueue_Button_Driver_State, &current , &pxHigherPriorityTaskWoken);
-
+    g_Button_States[Driver_Seat] = current;
     xEventGroupSetBitsFromISR(xEventGroup, AppButton_Driver_Pressed_BIT,&pxHigherPriorityTaskWoken);
 }
 
 void PassengerButtonPressed(void){
     BaseType_t pxHigherPriorityTaskWoken = pdFALSE;
-    uint8 current = g_Button_States[Driver_Seat];
-    uint8 next = 0;
+    uint8 current = g_Button_States[Passenger_Seat];
+
     if(current == HEATER_OFF){
-        next = HEATER_LOW;
+        current = HEATER_LOW;
     }else if(current == HEATER_LOW){
-        next = HEATER_MEDIUM;
+        current = HEATER_MEDIUM;
     }else if(current == HEATER_MEDIUM){
-        next = HEATER_HIGH;
+        current = HEATER_HIGH;
     }else if(current == HEATER_HIGH){
-        next = HEATER_OFF;
+        current = HEATER_OFF;
     }
-    g_Button_States[Passenger_Seat] = next;
+
+    g_Button_States[Passenger_Seat] = current;
     xEventGroupSetBitsFromISR(xEventGroup, AppButton_Passenger_Pressed_BIT,&pxHigherPriorityTaskWoken);
 }
 /*-----------------------------------------------------------*/

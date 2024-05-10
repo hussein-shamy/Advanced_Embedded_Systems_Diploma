@@ -37,8 +37,6 @@ static void CreateTasks (void){
     xEventGroup2 = xEventGroupCreate();
     xBinarySemaphore_Heater_Intensity_Setted_Driver_Seat = xSemaphoreCreateBinary();
     xBinarySemaphore_Heater_Intensity_Setted_Passernger_Seat = xSemaphoreCreateBinary();
-    xQueue_Button_Driver_State = xQueueCreate(2, sizeof(uint8));
-    xQueue_Button_Passenger_State = xQueueCreate(2, sizeof(uint8));
 
 
      /* Create Tasks here */

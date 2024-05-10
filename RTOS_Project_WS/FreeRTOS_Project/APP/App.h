@@ -49,8 +49,6 @@ extern sint16 g_Seats_Temp[NO_OF_SEATES];
 extern uint8 g_Heater_intensity[NO_OF_SEATES];
 extern EventGroupHandle_t xEventGroup;
 extern EventGroupHandle_t xEventGroup2;
-extern QueueHandle_t xQueue_Button_Driver_State;
-extern QueueHandle_t xQueue_Button_Passenger_State;
 
 /* FreeRTOS tasks */
 void vPeriodic_Task_ReadTemp_Seat(void *pvParameters);
