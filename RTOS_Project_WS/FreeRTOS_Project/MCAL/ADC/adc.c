@@ -77,7 +77,7 @@ uint16 ADC_read_PE1(void)
 
     /* Setting PE1 as an input channel */
     CLEAR_BIT(ADC0_ACTSS_REG, ASEN3); 			/* Disable SS3 during configuration */
-    ADC0_SSCTL3_REG |= (1<<3);                   /* Set Temp Sensor */
+   // ADC0_SSCTL3_REG |= (1<<3);                   /* Set Temp Sensor */
     ADC0_SSMUX3_REG = PE1_AIN_2; 				/* Set PE1 (AIN2) as input */
     SET_BIT(ADC0_ACTSS_REG, ASEN3); 			/* Enable SS3 after configuration */
 

@@ -28,8 +28,11 @@ void GPIO_BuiltinButtonsLedsInit(void)
 
     /* Enable clock for PORTF and wait for clock to start */
     SYSCTL_RCGCGPIO_REG |= 0x20;
-    while (!(SYSCTL_PRGPIO_REG & 0x20))
-        ;
+    while (!(SYSCTL_PRGPIO_REG & 0x20));
+
+    /* Enable clock for PORTD and wait for clock to start */
+    SYSCTL_RCGCGPIO_REG |= 0x08;
+    while (!(SYSCTL_PRGPIO_REG & 0x08));
 
     GPIO_PORTF_LOCK_REG = 0x4C4F434B; /* Unlock the GPIO_PORTF_CR_REG */
     GPIO_PORTF_CR_REG |= (1 << 0); /* Enable changes on PF0 */
@@ -41,22 +44,57 @@ void GPIO_BuiltinButtonsLedsInit(void)
     GPIO_PORTF_PUR_REG |= ((1 << 0) | (1 << 4)); /* Enable pull-up on PF0 & PF4 */
     GPIO_PORTF_DEN_REG |= 0x1F; /* Enable Digital I/O on PF0, PF1, PF2, PF3 and PF4 */
     GPIO_PORTF_DATA_REG &= ~(1 << 1) & ~(1 << 2) & ~(1 << 3); /* Clear bits 1, 2 & 3 in Data register to turn off the LEDs */
+
+    GPIO_PORTD_PCTL_REG &= 0xFFFF0000; /* Clear PMCx bits for PF0, PF1, PF2, PF3 and PF4 to use it as GPIO pins */
+    GPIO_PORTD_AMSEL_REG &= 0x0F; /* Disable Analog on PF0, PF1, PF2, PF3 and PF4 */
+    GPIO_PORTD_DIR_REG |= (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) ; /* Configure PD0,1,2,3 as output pins */
+    GPIO_PORTD_AFSEL_REG &= 0x0F; /* Disable alternative function on PF0, PF1, PF2, PF3 and PF4 */
+    GPIO_PORTD_DEN_REG |= 0x0F; /* Enable Digital I/O on PF0, PF1, PF2, PF3 and PF4 */
+    GPIO_PORTD_DATA_REG &= ~(1 << 0) & ~(1 << 1) & ~(1 << 2) & ~(1 << 3); /* Clear bits 0, 1, 2 & 3 in Data register to turn off the LEDs */
+
 }
 
-void GPIO_RedLedOn(void)
+void GPIO_RedLedOn(uint8 seat)
 {
-    GPIO_PORTF_DATA_REG |= (1 << 1); /* Red LED ON */
+    switch(seat){
+    case 0:
+        GPIO_PORTF_DATA_REG |= (1 << 1); /* Red LED ON */
+        break;
+    case 1:
+        GPIO_PORTD_DATA_REG |= (1<<3);
+        break;
+    }
 }
 
-void GPIO_BlueLedOn(void)
+void GPIO_BlueLedOn(uint8 seat)
 {
-    GPIO_PORTF_DATA_REG |= (1 << 2); /* Blue LED ON */
+    switch(seat){
+    case 0:
+        GPIO_PORTF_DATA_REG |= (1 << 2); /* Blue LED ON */
+        break;
+    case 1:
+        GPIO_PORTD_DATA_REG |= (1<<2);
+        break;
+    }
 }
 
-void GPIO_GreenLedOn(void)
+void GPIO_GreenLedOn(uint8 seat)
 {
+    switch(seat){
+    case 0:
     GPIO_PORTF_DATA_REG |= (1 << 3); /* Green LED ON */
+        break;
+    case 1:
+        GPIO_PORTD_DATA_REG |= (1<<1);
+        break;
+    }
 }
+
+void GPIO_YellowLedOn(void)
+{
+        GPIO_PORTD_DATA_REG |= (1<<0);
+}
+
 
 void GPIO_RedLedOff(void)
 {
@@ -73,9 +111,16 @@ void GPIO_GreenLedOff(void)
     GPIO_PORTF_DATA_REG &= ~(1 << 3); /* Green LED OFF */
 }
 
-void GPIO_AllLedOff(void)
+void GPIO_AllLedOff(uint8 seat)
 {
+    switch(seat){
+    case 0:
     GPIO_PORTF_DATA_REG &= 0xFFF1; /* All LEDs OFF */
+        break;
+    case 1:
+    GPIO_PORTD_DATA_REG &= 0xFFF0; /* All LEDs OFF */
+        break;
+    }
 }
 
 void GPIO_RedLedToggle(void)

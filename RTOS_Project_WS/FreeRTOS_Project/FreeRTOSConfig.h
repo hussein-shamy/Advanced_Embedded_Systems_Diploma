@@ -18,6 +18,9 @@
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
 
+#include "GPTM.h"
+#include "std_types.h"
+
 /******************************************************************************/
 /* Scheduling behavior related definitions. **********************************/
 /******************************************************************************/
@@ -55,6 +58,19 @@
  * TickType_t is defined to be an unsigned 32-bit type. */
 #define configUSE_16_BIT_TICKS                0
 
+
+
+/******************************************************************************/
+/* Hook and callback function related definitions. ****************************/
+/******************************************************************************/
+
+/* Set the following configUSE_* constants to 1 to include the named hook
+ * functionality in the build.  Set to 0 to exclude the hook functionality from the
+ * build.  The application writer is responsible for providing the hook function
+ * for any set to 1. */
+#define configUSE_IDLE_HOOK                   0
+#define configUSE_TICK_HOOK                   0
+
 /******************************************************************************/
 /* Memory allocation related definitions. *************************************/
 /******************************************************************************/
@@ -76,6 +92,11 @@
 #define INCLUDE_vTaskDelayUntil                1
 #define INCLUDE_xTimerPendFunctionCall         1
 #define INCLUDE_vTaskSuspend                   0
+
+/* Set the following configUSE_* constants to 1 to include the named feature in
+ * the build, or 0 to exclude the named feature from the build. */
+#define configUSE_APPLICATION_TASK_TAG         1
+
 /******************************************************************************/
 /* Software timer related definitions. ****************************************/
 /******************************************************************************/
@@ -144,5 +165,25 @@ PRIORITY THAN THIS! (higher priorities are lower numeric values. */
 
 /* Normal assert() semantics without relying on the provision of an assert.h header file. */
 #define configASSERT( x ) if( ( x ) == 0 ) { taskDISABLE_INTERRUPTS(); for( ;; ); }
+
+extern uint32 ullTasksOutTime[9];
+extern uint32 ullTasksInTime[9];
+extern uint32 ullTasksTotalTime[9];
+extern uint32 ullTasksExecutionTime[9];
+
+
+#define traceTASK_SWITCHED_IN()                                    \
+do{                                                                \
+    uint32 taskInTag = (uint32)(pxCurrentTCB->pxTaskTag);          \
+    ullTasksInTime[taskInTag] = GPTM_WTimer0Read();                \
+}while(0);
+
+#define traceTASK_SWITCHED_OUT()                                                                 \
+do{                                                                                              \
+    uint32 taskOutTag = (uint32)(pxCurrentTCB->pxTaskTag);                                       \
+    ullTasksOutTime[taskOutTag] = GPTM_WTimer0Read();                                            \
+    ullTasksExecutionTime[taskOutTag] = ullTasksOutTime[taskOutTag] - ullTasksInTime[taskOutTag];\
+    ullTasksTotalTime[taskOutTag] += ullTasksOutTime[taskOutTag] - ullTasksInTime[taskOutTag];   \
+}while(0);
 
 #endif /* FREERTOS_CONFIG_H */

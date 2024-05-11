@@ -46,14 +46,15 @@ void GPIOPortA_Handler(void);
 void GPIOPortF_Handler(void);
 
 void GPIO_BuiltinButtonsLedsInit(void);
-void GPIO_RedLedOn(void);
-void GPIO_BlueLedOn(void);
-void GPIO_GreenLedOn(void);
+void GPIO_RedLedOn(uint8 seat);
+void GPIO_BlueLedOn(uint8 seat);
+void GPIO_GreenLedOn(uint8 seat);
+void GPIO_YellowLedOn(void);
 
 void GPIO_RedLedOff(void);
 void GPIO_BlueLedOff(void);
 void GPIO_GreenLedOff(void);
-void GPIO_AllLedOff(void);
+void GPIO_AllLedOff(uint8 seat);
 
 void GPIO_RedLedToggle(void);
 void GPIO_BlueLedToggle(void);

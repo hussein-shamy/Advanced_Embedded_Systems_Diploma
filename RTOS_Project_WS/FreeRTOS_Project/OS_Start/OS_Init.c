@@ -9,6 +9,7 @@
 #include "MCAL/GPIO/gpio.h"
 #include "MCAL/ADC/adc.h"
 #include "MCAL/UART/uart0.h"
+#include "MCAL/GPTM/GPTM.h"
 
 static void GPIO_PORTF_Set_Call_Back( void (*CallBackDriverButton)(void),void (*CallBackPassengerButton) (void) ){
     PORTF_Call_Back_Func[0] = CallBackDriverButton;
@@ -28,16 +29,23 @@ static void prvSetupHardware(void)
     ADC_PE0_PE1_init();
     /*UART*/
     UART0_Init();
+    /*GPTM*/
+    GPTM_WTimer0Init();
 }
 
 static void CreateTasks (void){
 
     /* Create two binary semaphores */
     xEventGroup = xEventGroupCreate();
-    xEventGroup2 = xEventGroupCreate();
     xBinarySemaphore_Heater_Intensity_Setted_Driver_Seat = xSemaphoreCreateBinary();
     xBinarySemaphore_Heater_Intensity_Setted_Passernger_Seat = xSemaphoreCreateBinary();
 
+    xTaskCreate(vRunTimeMeasurementsTask,
+                "Run time measurement Task",
+                256,
+                NULL,
+                1,
+                &xTask0Handle);
 
      /* Create Tasks here */
      xTaskCreate(vPeriodic_Task_ReadTemp_Seat,
@@ -45,49 +53,58 @@ static void CreateTasks (void){
                  64,
                  (void*) Driver_Seat,
                  4,
-                 NULL);
+                 &xTask1Handle);
 
      xTaskCreate(vPeriodic_Task_ReadTemp_Seat,
                  "Read Temperature for Passenger's Seat",
                  64,
                  (void*) Passenger_Seat,
                  4,
-                 NULL);
+                 &xTask2Handle);
 
      xTaskCreate(vPeriodic_Task_SetIntensity_Seat,
                  "Set Heating Intensity for Driver's Seat",
                  64,
                  (void*) Driver_Seat,
                  3,
-                 NULL);
+                 &xTask3Handle);
 
      xTaskCreate(vPeriodic_Task_SetIntensity_Seat,
                  "Set Heating Intensity for Passenger's Seat",
                  64,
                  (void*) Passenger_Seat,
                  3,
-                 NULL);
+                 &xTask4Handle);
 
      xTaskCreate(vPeriodic_Task_ControlHeating_Seat,
                  "Control Heating for Driver's Seat",
                  64,
                  (void*) Driver_Seat,
                  2,
-                 NULL);
+                 &xTask5Handle);
 
      xTaskCreate(vPeriodic_Task_ControlHeating_Seat,
                  "Control Heating for Passenger's Seat",
                  64,
                  (void*) Passenger_Seat,
                  2,
-                 NULL);
+                 &xTask6Handle);
 
      xTaskCreate(vPeriodic_Task_DisplayTempData_LCD,
                  "Display Temperature Data on LCD Screen",
                  128,
                  NULL,
-                 1,
-                 NULL);
+                 2,
+                 &xTask7Handle);
+
+     vTaskSetApplicationTaskTag( xTask0Handle, ( void * ) 1 );
+     vTaskSetApplicationTaskTag( xTask1Handle, ( void * ) 2 );
+     vTaskSetApplicationTaskTag( xTask2Handle, ( void * ) 3 );
+     vTaskSetApplicationTaskTag( xTask3Handle, ( void * ) 4 );
+     vTaskSetApplicationTaskTag( xTask4Handle, ( void * ) 5 );
+     vTaskSetApplicationTaskTag( xTask5Handle, ( void * ) 6 );
+     vTaskSetApplicationTaskTag( xTask6Handle, ( void * ) 7 );
+     vTaskSetApplicationTaskTag( xTask7Handle, ( void * ) 8 );
 }
 
 void OS_Start(void){

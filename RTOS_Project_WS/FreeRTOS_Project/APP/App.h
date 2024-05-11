@@ -39,22 +39,38 @@
 #define AppIntensity_Passenger_Selected_BIT ( 1UL << 1UL )  /* Event bit 1, which is set by a task. */
 #define AppTemp_Driver_Changed_BIT ( 1UL << 2UL )
 #define AppTemp_Passenger_Changed_BIT ( 1UL << 3UL )
+#define RUNTIME_MEASUREMENTS_TASK_PERIODICITY (1000U)
+
 
 xSemaphoreHandle xBinarySemaphore_Heater_Intensity_Setted_Driver_Seat;
 xSemaphoreHandle xBinarySemaphore_Heater_Intensity_Setted_Passernger_Seat;
 
+/* Used to hold the handle of tasks */
+extern TaskHandle_t xTask0Handle;
+extern TaskHandle_t xTask1Handle;
+extern TaskHandle_t xTask2Handle;
+extern TaskHandle_t xTask3Handle;
+extern TaskHandle_t xTask4Handle;
+extern TaskHandle_t xTask5Handle;
+extern TaskHandle_t xTask6Handle;
+extern TaskHandle_t xTask7Handle;
 
 extern volatile uint8 g_Button_States[NO_OF_SEATES];
 extern sint16 g_Seats_Temp[NO_OF_SEATES];
 extern uint8 g_Heater_intensity[NO_OF_SEATES];
 extern EventGroupHandle_t xEventGroup;
-extern EventGroupHandle_t xEventGroup2;
+
+extern uint32 ullTasksOutTime[9];
+extern uint32 ullTasksInTime[9];
+extern uint32 ullTasksTotalTime[9];
+extern uint32 ullTasksExecutionTime[9];
 
 /* FreeRTOS tasks */
 void vPeriodic_Task_ReadTemp_Seat(void *pvParameters);
 void vPeriodic_Task_SetIntensity_Seat(void *pvParameters);
 void vPeriodic_Task_ControlHeating_Seat(void *pvParameters);
 void vPeriodic_Task_DisplayTempData_LCD(void *pvParameters);
+void vRunTimeMeasurementsTask(void *pvParameters);
 void DriverButtonPressed(void);
 void PassengerButtonPressed(void);
 
